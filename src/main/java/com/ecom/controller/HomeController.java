@@ -22,4 +22,9 @@ public class HomeController {
     public String base() {
         return "base";
     }
+
+    @GetMapping("/product")
+    public String product() {
+        return "product";
+    }
 }
