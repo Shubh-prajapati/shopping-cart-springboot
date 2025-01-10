@@ -4,17 +4,38 @@
 
   <groupId>com.ecom</groupId>
   <artifactId>Shopping_Cart</artifactId>
-  <description>Online Shopping Cart Spring Boot MVC Project</description>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
-
   <name>Shopping_Cart</name>
+  <description>Online Shopping Cart Spring Boot MVC Project</description>
   <url>http://maven.apache.org</url>
 
   <properties>
+    <java.version>17</java.version>
+    <spring-boot.version>3.3.5</spring-boot.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+
+  <build>
+    <plugins>
+      <!-- Spring Boot Maven Plugin -->
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>${spring-boot.version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
+    <!-- JUnit -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -22,42 +43,35 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
+    <!-- Spring Framework -->
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-web</artifactId>
       <version>6.1.14</version>
     </dependency>
 
-    <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web -->
+    <!-- Spring Boot Starter Web -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
-      <version>3.3.5</version>
+      <version>${spring-boot.version}</version>
     </dependency>
 
-
-    <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+    <!-- MySQL Connector -->
     <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
+      <groupId>com.mysql</groupId>
+      <artifactId>mysql-connector-j</artifactId>
       <version>8.0.33</version>
     </dependency>
 
-    <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa -->
-    <!--    <dependency>-->
-    <!--      <groupId>org.springframework.boot</groupId>-->
-    <!--      <artifactId>spring-boot-starter-data-jpa</artifactId>-->
-    <!--      <version>3.3.5</version>-->
-    <!--    </dependency>-->
-
+    <!-- Spring Boot Starter Thymeleaf -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-thymeleaf</artifactId>
-      <version>3.3.5</version>
+      <version>${spring-boot.version}</version>
     </dependency>
 
-    <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+    <!-- Lombok -->
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
@@ -65,12 +79,11 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-devtools -->
+    <!-- Spring Boot DevTools -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-devtools</artifactId>
-      <version>3.3.5</version>
+      <version>${spring-boot.version}</version>
     </dependency>
-
   </dependencies>
 </project>
