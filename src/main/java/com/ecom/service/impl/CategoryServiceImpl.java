@@ -21,6 +21,12 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
+    public Boolean exitsCategory(String name) {
+
+        return categoryRepository.existsByName(name);
+    }
+
+    @Override
     public List<Category> getAllCategory() {
         return categoryRepository.findAll();
     }
