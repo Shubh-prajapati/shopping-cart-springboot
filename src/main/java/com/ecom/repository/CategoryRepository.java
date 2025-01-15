@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public class CategoryRepository implements JpaRepository<Category, Integer> {
 
-    public Boolean existsByName(String name) ;
+    public Boolean existsByName(String name);
 

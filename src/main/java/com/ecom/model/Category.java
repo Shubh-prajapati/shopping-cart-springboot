@@ -6,6 +6,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
 
+import javax.lang.model.element.Name;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,7 +19,8 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private  String name;
-
     private String imageName;
     private boolean isActive;
+
+
 }
