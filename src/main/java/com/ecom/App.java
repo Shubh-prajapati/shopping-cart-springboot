@@ -2,13 +2,15 @@ package com.ecom;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-public class App 
+@EnableJpaRepositories(basePackages = "com.ecom.repository") // Optional if repos are in subpackage
+public class App
 {
     public static void main( String[] args ) {
-        SpringApplication.run(App.class, args); // Its execute program
-
+        SpringApplication.run(App.class, args);
     }
 }
+
 

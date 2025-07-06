@@ -7,13 +7,11 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
-    @Controller
+@Controller
     @RequestMapping("/admin")
     public class AdminController {
 
@@ -39,23 +37,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
         }
 
         @PostMapping("/saveCategory")
-        public String saveCategory(@ModelAttribute Category category, HttpSession session){
+        public String saveCategory(@ModelAttribute Category category, @RequestParam("file")MultipartFile file, HttpSession session){
+            String imageName =file !=null ? file.getOriginalFilename(): "default.jpg";
+             
 
-           Boolean existCategory = categoryService.exitsCategory(category.getName());
+
+           Boolean existCategory = categoryService.exitsCategory(category.name());
             if (existCategory)
             {
                 session.setAttribute("errorMsg", "Category Name already exits");
             }else {
                 Category saveCategory = categoryService.saveCategory(category);
-                if(!ObjectUtils.isEmpty(saveCategory)){
+
+                if(ObjectUtils.isEmpty(saveCategory)){
                     session.setAttribute("errorMsg","Not saved ! internal server error");
                 }else{
-                    session.setAttribute("successMsg","saved successfully");
-
+                    session.setAttribute("successMsg","Saved successfully");
                 }
 
             }
-
+                categoryService.saveCategory(category);
 
             return "redirect/category";
         }

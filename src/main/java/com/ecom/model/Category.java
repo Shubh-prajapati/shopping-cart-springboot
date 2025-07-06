@@ -23,4 +23,8 @@ public class Category {
     private boolean isActive;
 
 
+    public String name() {
+        return name;
+    }
 }
+
