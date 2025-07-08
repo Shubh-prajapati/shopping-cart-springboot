@@ -24,7 +24,7 @@
 //
 //    @Bean
 //    public LocalContainerEntityManagerFactoryBean entityManagerFactory(EntityManagerFactoryBuilder builder, DataSource dataSource) {
-        return builder
+//        return builder
 //                .dataSource(dataSource)
 //                .packages("com.ecom.model")  // Replace with your entity package
 //                .build();

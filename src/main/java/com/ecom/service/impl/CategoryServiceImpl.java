@@ -1,5 +1,4 @@
 package com.ecom.service.impl;
-
 import com.ecom.model.Category;
 import com.ecom.repository.CategoryRepository;
 import com.ecom.services.CategoryService;
@@ -24,7 +23,6 @@ public class CategoryServiceImpl implements CategoryService{
 
     @Override
     public Boolean exitsCategory(String name) {
-
         return categoryRepository.existsByName(name);
     }
 
