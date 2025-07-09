@@ -48,13 +48,12 @@ import java.nio.file.StandardCopyOption;
             String imageName =file !=null ? file.getOriginalFilename(): "default.jpg";
             category.setImageName(imageName);
 
-           Boolean existCategory = categoryService.exitsCategory(category.name());
+           Boolean existCategory = categoryService.existCategory(category.getName());
             if (existCategory)
             {
                 session.setAttribute("errorMsg", "Category Name already exits");
             }else {
                 Category saveCategory = categoryService.saveCategory(category);
-
                 if(ObjectUtils.isEmpty(saveCategory)){
                     session.setAttribute("errorMsg","Not saved ! internal server error");
                 }else{
@@ -68,7 +67,6 @@ import java.nio.file.StandardCopyOption;
 
                     session.setAttribute("succMsg","Saved successfully");
                 }
-
             }
                 categoryService.saveCategory(category);
 

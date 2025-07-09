@@ -22,7 +22,7 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
-    public Boolean exitsCategory(String name) {
+    public Boolean existCategory(String name) {
         return categoryRepository.existsByName(name);
     }
 
