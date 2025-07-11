@@ -142,8 +142,25 @@ import java.util.List;
            }
              return "redirect:/admin/loadAddProduct";
            }
+           @GetMapping("/products")
+           public String loadViewProduct(Model m){
+            m.addAttribute("products", productService.getAllProduct());
+            return "admin/products";
 
+           }
 
+    @GetMapping("/deleteProduct/{id}")
+    public String deleteProduct(@PathVariable int id, HttpSession session){
+           Boolean deleteProduct= productService.deleteProduct(id);
+
+           if (deleteProduct){
+                session.setAttribute("succMsg","Product delete success");
+           }else{
+               session.setAttribute("errorMsg","Something wrong on server");
+           }
+        return "redirect:/admin/products";
 
     }
+
+}
 
