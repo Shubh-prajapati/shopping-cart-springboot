@@ -1,6 +1,8 @@
 package com.ecom.controller;
 import com.ecom.model.Category;
+import com.ecom.model.Product;
 import com.ecom.services.CategoryService;
+import com.ecom.services.ProductService;
 import jakarta.servlet.http.HttpSession;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-
+import java.util.List;
 
 
 @Controller
@@ -26,6 +28,9 @@ import java.nio.file.StandardCopyOption;
         @Autowired
         private CategoryService categoryService;
 
+        @Autowired
+        private  ProductService productService;
+
         @GetMapping("/")
         public String index()
         {
@@ -33,21 +38,21 @@ import java.nio.file.StandardCopyOption;
         }
 
         @GetMapping("/loadAddProduct")
-        public String loadAddProduct()
+        public String loadAddProduct(Model m)
         {
+            List<Category> categories = categoryService.getAllCategory();
+            m.addAttribute("categories",categories);
             return "admin/add_product";
         }
-
         @GetMapping("/category")
         public String category(Model m)
         {
             m.addAttribute("categorys",categoryService.getAllCategory());
             return "admin/category";
         }
-
         @SneakyThrows
         @PostMapping("/saveCategory")
-        public String saveCategory(@ModelAttribute Category category, @RequestParam("file")MultipartFile file, HttpSession session){
+        public String saveCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file, HttpSession session){
             String imageName =file !=null ? file.getOriginalFilename(): "default.jpg";
             category.setImageName(imageName);
 
@@ -72,7 +77,6 @@ import java.nio.file.StandardCopyOption;
 
             return "redirect:/admin/category";
         }
-
         @GetMapping("/deleteCategory/{id}")
         public String deleteCategory(@PathVariable int id, HttpSession session)
         {
@@ -82,11 +86,9 @@ import java.nio.file.StandardCopyOption;
               session.setAttribute("succMsg","category delete success");
           }else {
               session.setAttribute("errorMsg","something wrong on server");
-
           }
             return "redirect:/admin/category";
         }
-
         @GetMapping("/loadEditCategory/{id}")
         public String loadEditCategory(@PathVariable int id, Model m){
             m.addAttribute("category",categoryService.getCategoryById(id));
@@ -94,15 +96,12 @@ import java.nio.file.StandardCopyOption;
         }
             @PostMapping("/updateCategory")
             public String updateCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file,HttpSession session) throws IOException {
-
             Category oldcategory=categoryService.getCategoryById(category.getId());
             String imageName = file.isEmpty() ?  oldcategory.getImageName(): file.getOriginalFilename();
             if(!ObjectUtils.isEmpty(category)) {
                 oldcategory.setName(category.getName());
-//                oldcategory.setIsActive(category.getIsActive());
+//             oldcategory.setIsActive(category.getIsActive());
                 oldcategory.setImageName(imageName);
-
-
             }
             Category updateCategory =categoryService.saveCategory(oldcategory);
 
@@ -121,11 +120,28 @@ import java.nio.file.StandardCopyOption;
                 session.setAttribute("errorMsg","something wrong on server");
 
             }
-
             return "redirect:/admin/loadEditCategory/" +category.getId();
-
         }
 
+        @PostMapping("/saveProduct")
+           public String saveProduct(@ModelAttribute Product product, @RequestParam("file") MultipartFile image, HttpSession session) throws IOException {
+
+            String imageName=image.isEmpty() ? "default.jpg": image.getOriginalFilename();
+            product.setImage(imageName);
+
+           Product saveProduct = productService.saveproduct(product);
+           if(!ObjectUtils.isEmpty(saveProduct)){
+
+               File saveFile=new ClassPathResource("static/img").getFile();
+               Path path= Paths.get(saveFile.getAbsolutePath()+ File.separator +"product_img"+ File.separator+ image.getOriginalFilename());
+               System.out.println(path);
+               Files.copy(image.getInputStream(),path, StandardCopyOption.REPLACE_EXISTING);
+               session.setAttribute("succMsg","Product Saved Success");
+           }else{
+               session.setAttribute("errorMsg","something wrong on server");
+           }
+             return "redirect:/admin/loadAddProduct";
+           }
 
 
 
