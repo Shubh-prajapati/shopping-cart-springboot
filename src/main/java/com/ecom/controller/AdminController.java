@@ -86,6 +86,18 @@ import java.nio.file.StandardCopyOption;
             return "redirect:/admin/category";
         }
 
+        @GetMapping("/loadEditCategory/{id}")
+        public String loadEditCategory(@PathVariable int id, Model m){
+            m.addAttribute("category",categoryService.getCategoryById(id));
+            return "admin/editCategory";
+        }
+            @PostMapping("/updateCategory")
+            public String updateCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file){
+            return "redirect:/admin/loadEditCategory"+category.getId();
+
+        }
+
+
 
 
     }
