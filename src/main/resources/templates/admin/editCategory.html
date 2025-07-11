@@ -26,6 +26,7 @@
                     </div>
                     <div class="card-body">
                         <form action="/admin/updateCategory"  method="post" enctype="multipart/form-data">
+                            <input type="hidden" name="id" th:value="${category.id}">
                             <div class="mb-3">
                                 <label>Enter Category</label>
                                 <input type="text"  name="name" th:value="${category.name}" class="form-control" >

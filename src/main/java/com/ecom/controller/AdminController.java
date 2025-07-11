@@ -10,12 +10,13 @@ import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+
 
 
 @Controller
@@ -62,7 +63,7 @@ import java.nio.file.StandardCopyOption;
 
                     File saveFile=new ClassPathResource("static/img").getFile();
                     Path path= Paths.get(saveFile.getAbsolutePath()+ File.separator +"category_img"+ File.separator+ file.getOriginalFilename());
-                    System.out.println(path);
+                    //System.out.println(path);
                     Files.copy(file.getInputStream(),path, StandardCopyOption.REPLACE_EXISTING);
                     session.setAttribute("succMsg","Saved successfully");
                 }
@@ -92,8 +93,36 @@ import java.nio.file.StandardCopyOption;
             return "admin/editCategory";
         }
             @PostMapping("/updateCategory")
-            public String updateCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file){
-            return "redirect:/admin/loadEditCategory"+category.getId();
+            public String updateCategory(@ModelAttribute Category category, @RequestParam("file") MultipartFile file,HttpSession session) throws IOException {
+
+            Category oldcategory=categoryService.getCategoryById(category.getId());
+            String imageName = file.isEmpty() ?  oldcategory.getImageName(): file.getOriginalFilename();
+            if(!ObjectUtils.isEmpty(category)) {
+                oldcategory.setName(category.getName());
+//                oldcategory.setIsActive(category.getIsActive());
+                oldcategory.setImageName(imageName);
+
+
+            }
+            Category updateCategory =categoryService.saveCategory(oldcategory);
+
+            if(!ObjectUtils.isEmpty(updateCategory))
+            {
+                    if(!file.isEmpty()){
+                        File saveFile=new ClassPathResource("static/img").getFile();
+                        Path path= Paths.get(saveFile.getAbsolutePath()+ File.separator +"category_img"+ File.separator+ file.getOriginalFilename());
+                        //System.out.println(path);
+                        Files.copy(file.getInputStream(),path, StandardCopyOption.REPLACE_EXISTING);
+                    }
+
+                session.setAttribute("succMsg","Category update success");
+            }
+            else{
+                session.setAttribute("errorMsg","something wrong on server");
+
+            }
+
+            return "redirect:/admin/loadEditCategory/" +category.getId();
 
         }
 
