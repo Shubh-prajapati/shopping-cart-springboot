@@ -128,13 +128,17 @@ import java.util.List;
 
             String imageName=image.isEmpty() ? "default.jpg": image.getOriginalFilename();
             product.setImage(imageName);
+            product.setDiscount(0);
+            product.setDiscountPrice(product.getPrice());
+            Product saveProduct = productService.saveproduct(product);
 
-           Product saveProduct = productService.saveproduct(product);
+
            if(!ObjectUtils.isEmpty(saveProduct)){
 
                File saveFile=new ClassPathResource("static/img").getFile();
                Path path= Paths.get(saveFile.getAbsolutePath()+ File.separator +"product_img"+ File.separator+ image.getOriginalFilename());
-               System.out.println(path);
+
+//               System.out.println(path);
                Files.copy(image.getInputStream(),path, StandardCopyOption.REPLACE_EXISTING);
                session.setAttribute("succMsg","Product Saved Success");
            }else{
@@ -172,6 +176,13 @@ import java.util.List;
 
     @PostMapping("/updateProduct")
     public String updateProduct(@ModelAttribute Product product,@RequestParam("file") MultipartFile image,HttpSession session,Model m){
+
+
+            if(product.getDiscount() < 0 || product.getDiscount() >100){
+
+                session.setAttribute("errorMsg","invalid Discount");
+            }else {
+
            Product updateProduct = productService.updateProduct(product,image);
             if (!ObjectUtils.isEmpty(updateProduct))
             {
@@ -179,6 +190,7 @@ import java.util.List;
 
             }else {
                 session.setAttribute("errorMsg","Something wrong on server");
+             }
             }
         return "redirect:/admin/edit_product/"+product.getId();
 
