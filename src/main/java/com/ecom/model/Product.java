@@ -20,6 +20,7 @@ public class Product {
     private String title;
     @Column(length = 5000)
     private  String description;
+
     private  String category;
 
     private Double price;
@@ -29,7 +30,10 @@ public class Product {
     private String image;
 
     private int discount;
+
     private  double discountPrice;
+
+    private Boolean isActive;
 
 }
 

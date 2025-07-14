@@ -182,8 +182,7 @@ import java.util.List;
 
                 session.setAttribute("errorMsg","invalid Discount");
             }else {
-
-           Product updateProduct = productService.updateProduct(product,image);
+                Product updateProduct = productService.updateProduct(product,image);
             if (!ObjectUtils.isEmpty(updateProduct))
             {
                 session.setAttribute("succMsg","Product update success");
@@ -192,7 +191,7 @@ import java.util.List;
                 session.setAttribute("errorMsg","Something wrong on server");
              }
             }
-        return "redirect:/admin/edit_product/"+product.getId();
+        return "redirect:/admin/editProduct/"+product.getId();
 
     }
 
