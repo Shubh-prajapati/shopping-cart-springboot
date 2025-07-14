@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="base::Layout(~{::section})">
+      th:replace="base::Layout(~{::section})" xmlns:product="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -8,10 +8,11 @@
 <body>
 <section>
     <div class="container card-sh" style="margin-top: 70px; margin-bottom:80px" >
-        <div class="col-md-12 p-5">
+        <div class="col-md-12 p-5"  >
                 <div class="row">
                 <div class="col-md-6 text-end">
-                    <img src="img/product_img/Iphones12.jpg"  alt="Product Image"  width="330px" height="400px">
+<!--                    <img src=`/img/product_img/Iphones12.jpg  alt="Product Image"  width="330px" height="400px">-->
+                    <img  alt="" th:src="@{'/img/product_img/'+${product.image}}" width="330px" height="400px">
 
                 </div>
                 <div class="col-md-6">
@@ -20,7 +21,8 @@
                         <span class="fw-bold">Description : </span><br>[[${product.description}]]
                     </p>
                     <p>
-                        <span class="fw-bold"> Product Details: </span> <br><span class="badge bg-success">Available</span>
+                        <span class="fw-bold"> Product Details: </span>
+                        <br><span class="badge bg-success">Available</span>
                             <span class="badge bg-warning">out of stock</span>
 
 
