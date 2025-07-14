@@ -2,14 +2,26 @@ package com.ecom.controller;
 
 import com.ecom.model.Category;
 import com.ecom.model.Product;
+import com.ecom.model.UserDtls;
 import com.ecom.services.CategoryService;
 import com.ecom.services.ProductService;
+import com.ecom.services.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.swing.text.html.HTML;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 
@@ -20,6 +32,9 @@ public class HomeController {
     private CategoryService categoryService;
     @Autowired
     private ProductService productService;
+
+    @Autowired
+    private UserService userService;
     @GetMapping("/index")
     public String ShowIndex() {
         return "index";
@@ -54,5 +69,29 @@ public class HomeController {
         Product productById = productService.getProductById(id);
         m.addAttribute("product", productById);
         return "view_product";
+    }
+
+    @PostMapping("/saveUser")
+    public String saveUser(@ModelAttribute UserDtls user, @RequestParam("img") MultipartFile file, HttpSession session) throws IOException {
+
+        String imageName=file.isEmpty()? "default.jpg" : file.getOriginalFilename();
+        user.setProfileImage(imageName);
+
+
+        UserDtls saveUser=userService.saveUser(user);
+        if(!ObjectUtils.isEmpty(saveUser))
+        {
+            if (!file.isEmpty()){
+                File saveFile=new ClassPathResource("static/img").getFile();
+                Path path= Paths.get(saveFile.getAbsolutePath()+ File.separator +"profile_img"+ File.separator+ file.getOriginalFilename());
+                System.out.println(path);
+                Files.copy(file.getInputStream(),path, StandardCopyOption.REPLACE_EXISTING);
+            }
+            session.setAttribute("succMsg","Register Successfully");
+        }else {
+            session.setAttribute("errorMsg","something wrong on server");
+
+        }
+        return "redirect:/register";
     }
 }
