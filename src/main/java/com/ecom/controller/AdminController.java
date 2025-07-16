@@ -210,5 +210,10 @@ import java.util.List;
 
     }
 
+    @GetMapping("/users")
+    public String getAllUser(Model m){
+        return "/admin/users";
+    }
+
 }
 

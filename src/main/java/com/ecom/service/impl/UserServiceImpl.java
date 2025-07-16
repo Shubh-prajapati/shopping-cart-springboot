@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -18,6 +20,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDtls saveUser(UserDtls user) {
         user.setRole("ROLE_USER");
+        user.setIsEnable(true);
       String encodePassword =  passwordEncoder.encode(user.getPassword());
       user.setPassword(encodePassword);
         UserDtls saveUser=userRepository.save(user);
@@ -27,5 +30,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDtls getUserByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public List<UserDtls> getUsers(String role) {
+        userRepository.finByRole(role);
+        return null;
     }
 }
