@@ -1,8 +1,10 @@
 package com.ecom.controller;
 import com.ecom.model.Category;
 import com.ecom.model.Product;
+import com.ecom.model.UserDtls;
 import com.ecom.services.CategoryService;
 import com.ecom.services.ProductService;
+import com.ecom.services.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.security.Principal;
 import java.util.List;
 
 
@@ -25,13 +28,25 @@ import java.util.List;
 @RequestMapping("/admin")
     public class AdminController {
 
+    @Autowired
+    private UserService userService;
         @Autowired
         private CategoryService categoryService;
-
         @Autowired
         private  ProductService productService;
 
-        @GetMapping("/")
+        @ModelAttribute
+        public void getUserDetails(Principal p, Model m){
+            if(p!=null){
+                String email=p.getName();
+                UserDtls userDtls=userService.getUserByEmail(email);
+                m.addAttribute("user", userDtls);
+            }
+            List<Category> allActiveCategory = categoryService.getAllActiveCategory();
+            m.addAttribute("categorys",allActiveCategory);
+        }
+
+    @GetMapping("/")
         public String index()
         {
             return "admin/index";

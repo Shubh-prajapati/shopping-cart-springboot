@@ -15,13 +15,13 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.swing.text.html.HTML;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.security.Principal;
 import java.util.List;
 
 
@@ -32,9 +32,20 @@ public class HomeController {
     private CategoryService categoryService;
     @Autowired
     private ProductService productService;
-
     @Autowired
     private UserService userService;
+
+    @ModelAttribute
+    public void getUserDetails(Principal p,Model m){
+        if(p!=null){
+            String email =p.getName();
+            UserDtls userDtls=userService.getUserByEmail(email);
+            m.addAttribute("user", userDtls);
+        }
+
+        List<Category> allActiveCategory = categoryService.getAllActiveCategory();
+        m.addAttribute("categorys",allActiveCategory);
+    }
     @GetMapping("/index")
     public String ShowIndex() {
         return "index";
@@ -94,4 +105,5 @@ public class HomeController {
         }
         return "redirect:/register";
     }
+
 }
