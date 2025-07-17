@@ -212,7 +212,22 @@ import java.util.List;
 
     @GetMapping("/users")
     public String getAllUser(Model m){
+
+            List<UserDtls> users=userService.getUsers("ROLE_USER");
+            m.addAttribute("users",users);
         return "/admin/users";
+    }
+
+    @GetMapping("/updateSts")
+    public String updateUserAccountStatus(@RequestParam Boolean status,@RequestParam Integer id,HttpSession session){
+           Boolean f= userService.updateAccountStatus(id,status);
+           if(f){
+               session.setAttribute("succMsg", "Account Status Upadated");
+           }else {
+               session.setAttribute("errorMsg","Something Wrong On Server");
+           }
+
+            return "redirect:/admin/users";
     }
 
 }

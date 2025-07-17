@@ -11,4 +11,5 @@ public interface UserService {
 
             public List<UserDtls> getUsers(String role);
 
+    Boolean updateAccountStatus(Integer id,Boolean status);
 }
