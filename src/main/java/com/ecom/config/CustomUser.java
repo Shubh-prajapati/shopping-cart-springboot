@@ -4,8 +4,6 @@ import com.ecom.model.UserDtls;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -36,16 +34,20 @@ public class CustomUser implements UserDetails {
 
  @Override
  public boolean isAccountNonExpired() {
-  return true;
+
+  return user.getAccountNonLocked();
  }
 
  @Override
- public boolean isAccountNonLocked() {
+ public boolean isAccountNonLocked()
+ {
   return true;
  }
 
+
  @Override
- public boolean isCredentialsNonExpired() {
+ public boolean isCredentialsNonExpired()
+ {
   return true;
  }
 
