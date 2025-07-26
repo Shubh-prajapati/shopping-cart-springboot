@@ -2,6 +2,7 @@ package com.ecom.controller;
 import com.ecom.model.Category;
 import com.ecom.model.Product;
 import com.ecom.model.UserDtls;
+import com.ecom.services.CartService;
 import com.ecom.services.CategoryService;
 import com.ecom.services.ProductService;
 import com.ecom.services.UserService;
@@ -28,12 +29,15 @@ import java.util.List;
 @RequestMapping("/admin")
     public class AdminController {
 
-    @Autowired
-    private UserService userService;
+        @Autowired
+        private UserService userService;
         @Autowired
         private CategoryService categoryService;
         @Autowired
         private  ProductService productService;
+
+        @Autowired
+        private CartService cartService;
 
         @ModelAttribute
         public void getUserDetails(Principal p, Model m){
@@ -41,6 +45,8 @@ import java.util.List;
                 String email=p.getName();
                 UserDtls userDtls=userService.getUserByEmail(email);
                 m.addAttribute("user", userDtls);
+                Integer countCart=cartService.getCountCart(userDtls.getId());
+                m.addAttribute("countCart",countCart);
             }
             List<Category> allActiveCategory = categoryService.getAllActiveCategory();
             m.addAttribute("categorys",allActiveCategory);
