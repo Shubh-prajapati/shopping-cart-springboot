@@ -24,7 +24,9 @@ public class Cart {
     private Product product;
 
     private  Integer quantity;
-
     @Transient
     private double totalPrice;
+
+    @Transient
+    private Double totalOrderPrice;
 }
