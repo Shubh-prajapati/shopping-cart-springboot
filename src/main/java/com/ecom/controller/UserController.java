@@ -88,4 +88,8 @@ public class UserController {
         return userDtls;
     }
 
+@GetMapping("/orders")
+    private String orderPage(){
+        return "user/order";
+    }
 }
