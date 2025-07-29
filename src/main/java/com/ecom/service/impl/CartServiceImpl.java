@@ -80,18 +80,23 @@ public class CartServiceImpl implements CartService {
 
         Cart cart = cartRepository.findById(cid).get();
         int updateQuantity;
+
         if (sy.equalsIgnoreCase("de")) {
             updateQuantity = cart.getQuantity() - 1;
 
-            if (updateQuantity < 0) {
+            if (updateQuantity <= 0) {
                 cartRepository.delete(cart);
 
+            }else {
+                cart.setQuantity(updateQuantity);
+                cartRepository.save(cart);
             }
         }else {
             updateQuantity = cart.getQuantity() + 1;
+            cart.setQuantity(updateQuantity);
+            cartRepository.save(cart);
         }
-        cart.setQuantity(updateQuantity);
-        cartRepository.save(cart);
+
 
 
 

@@ -69,8 +69,10 @@ public class UserController {
         UserDtls user=getLoggedInUserDetails(p);
         List<Cart>carts=cartService.getCartByUser(user.getId());
         m.addAttribute("carts",carts);
-        Double totalOrderPrice = carts.get(carts.size() - 1).getTotalOrderPrice();
-        m.addAttribute("totalOrderPrice", totalOrderPrice);
+        if (carts.size()>0) {
+            Double totalOrderPrice = carts.get(carts.size() - 1).getTotalOrderPrice();
+            m.addAttribute("totalOrderPrice", totalOrderPrice);
+        }
         return "/user/cart";
  }
 
