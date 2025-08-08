@@ -1,7 +1,7 @@
 package com.ecom.repository;
 
 import com.ecom.model.Cart;
-import jakarta.persistence.criteria.CriteriaBuilder;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

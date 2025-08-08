@@ -8,10 +8,10 @@
 <body>
 <section>
     <div class="container mt-5 p-5">
+        <form action="/user/save-order" method="post">
         <div class="row">
-
             <div class="col-md-6 ">
-              <form>
+
                   <div class="mb-3 row">
                       <p class="text-center fs-4">Fill Address</p>
                       <hr>
@@ -31,7 +31,7 @@
                   <div class="mb-3 row">
                       <div class="col p-1">
                           <label>Email</label>
-                      <input type="email" name="Email"  class="form-control col">
+                      <input type="email" name="email"  class="form-control col">
                           </div>
                               <div class="col p-1">
                                   <label>Mobile Number</label>
@@ -65,7 +65,7 @@
 
                   </div>
 
-              </form>
+
             </div>
             <div class="col-md-6">
                 <p class="text-center fs-4">Payment Type</p>
@@ -103,32 +103,29 @@
                 <div class="card shadow p-3 mb-5 mt-2 bg-body-tertiary rounded">
 
                     <div class="card-body">
-                        <form action="/login" method="post">
+<!--                        <form action="/login" method="post">-->
                             <div class="mb-3">
                                 <label class="form-label">Select Payment Type</label>
-                                <select class="form-control">
+                                <select name="paymentType " class="form-control">
                                     <option>--Select--</option>
-                                    <option>Cash On Delivery</option>
-                                    <option>Online Payment</option>
+                                    <option value="COD">Cash On Delivery</option>
+                                    <option value="ONLINE">Online Payment</option>
 
                                 </select>
 
                             </div>
 
-                            <button type="submit" class="btn bg-primary text-white col-md-12">Place Order</button>
-                        </form>
+                            <button  class="btn bg-primary text-white col-md-12">Place Order</button>
                     </div>
 
                 </div>
             </div>
             </div>
+        </form>
         </div>
+    </form>
     </div>
-
-
-
-
-
+    
 </section>
 </body>
 </html>

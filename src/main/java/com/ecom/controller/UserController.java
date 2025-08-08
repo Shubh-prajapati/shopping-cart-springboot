@@ -1,6 +1,7 @@
 package com.ecom.controller;
 import com.ecom.model.Cart;
 import com.ecom.model.Category;
+import com.ecom.model.OrderRequest;
 import com.ecom.model.UserDtls;
 import com.ecom.services.CartService;
 import com.ecom.services.CategoryService;
@@ -10,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
@@ -92,4 +90,11 @@ public class UserController {
     private String orderPage(){
         return "user/order";
     }
+
+    @PostMapping("/save-order")
+    private String orderOrder(@ModelAttribute OrderRequest request){
+        System.out.println();
+        return "user/order";
+    }
+
 }
