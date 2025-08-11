@@ -87,14 +87,27 @@ public class UserController {
     }
 
 @GetMapping("/orders")
-    private String orderPage(){
+    private String orderPage(Principal p,Model m){
+    UserDtls user=getLoggedInUserDetails(p);
+    List<Cart>carts=cartService.getCartByUser(user.getId());
+    m.addAttribute("carts",carts);
+    if (carts.size()>0) {
+        Double orderPrice = carts.get(carts.size() - 1).getTotalOrderPrice();
+        Double totalOrderPrice = carts.get(carts.size() - 1).getTotalOrderPrice()+250+100;
+        m.addAttribute("orderPrice", orderPrice);
+        m.addAttribute("totalOrderPrice", totalOrderPrice);
+    }
         return "user/order";
     }
 
     @PostMapping("/save-order")
-    private String orderOrder(@ModelAttribute OrderRequest request){
+    private String orderOrder(@ModelAttribute OrderRequest request) {
         System.out.println();
-        return "user/order";
+        return "redirect:/user/success";
     }
 
+    @GetMapping("/success")
+    public String loadSuccess(){
+        return "/user/success";
+    }
 }

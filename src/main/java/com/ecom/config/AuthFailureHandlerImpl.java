@@ -1,5 +1,4 @@
 package com.ecom.config;
-
 import com.ecom.model.UserDtls;
 import com.ecom.repository.UserRepository;
 import com.ecom.services.UserService;
@@ -26,7 +25,9 @@ public class AuthFailureHandlerImpl extends SimpleUrlAuthenticationFailureHandle
         String email=request.getParameter("username");
         UserDtls userDtls = userRepository.findByEmail(email);
 
-        if(userDtls.getIsEnable()){
+        if (userDtls!=null){
+
+        if( userDtls.getIsEnable()){
             if (userDtls.getAccountNonLocked()){
                 if(userDtls.getFailedAttempt() < AppConstant.ATTEMPT_TIME)
                 {
@@ -47,6 +48,11 @@ public class AuthFailureHandlerImpl extends SimpleUrlAuthenticationFailureHandle
         }else {
                 exception=new LockedException("your account is Inactive");
         }
+        }else {
+            exception=new LockedException("Email And Password is Inactive");
+        }
+
+        super.setDefaultFailureUrl("/signin?error");
         super.onAuthenticationFailure(request, response, exception);
     }
 }
