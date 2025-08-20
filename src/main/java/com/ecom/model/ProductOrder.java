@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDate;
 import java.util.Date;
 
 
@@ -16,11 +18,13 @@ import java.util.Date;
 public class ProductOrder {
 @Id
 @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+
     private int id;
     private String orderId;
-    private Date orderDate;
+    private LocalDate  orderDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER) // <--- force product to be fetched immediately
     private Product product;
     private Double price;
     private Integer quantity;

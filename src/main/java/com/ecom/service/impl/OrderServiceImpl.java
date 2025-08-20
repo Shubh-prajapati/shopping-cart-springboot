@@ -10,12 +10,14 @@ import com.ecom.util.OrderStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class OrderServiceImpl implements OrderService {
+    public class OrderServiceImpl implements OrderService {
 
 @Autowired
     private ProductOrderRepository productOrderRepository;
@@ -30,9 +32,11 @@ private CartRepository cartRepository;
         for(Cart cart : carts){
             ProductOrder order=new ProductOrder();
             order.setOrderId(UUID.randomUUID().toString());
-            order.setOrderDate(new Date());
+            order.setOrderDate(LocalDate.now());
+
             order.setProduct(cart.getProduct());
             order.setPrice(cart.getProduct().getDiscountPrice());
+
             order.setQuantity(cart.getQuantity());
             order.setUser(cart.getUser());
 
@@ -50,8 +54,30 @@ private CartRepository cartRepository;
             address.setPincode(orderRequest.getPincode());
 
             order.setOrderAddress(address);
-           productOrderRepository.save(order);
+
+            productOrderRepository.save(order);
         }
 
     }
+
+    @Override
+    public List<ProductOrder> getOrderByUser(Integer userId) {
+
+        List<ProductOrder> orders=productOrderRepository.findByUserId(userId);
+        return orders;
+    }
+
+    @Override
+    public Boolean updateOrderStatus(Integer id, String status) {
+        Optional<ProductOrder> findById = productOrderRepository.findById(id);
+        if(findById.isPresent()){
+            ProductOrder productOrder = findById.get();
+            productOrder.setStatus(status);
+             productOrderRepository.save(productOrder);
+                return true;
+        }
+        return false;
+    }
+
+
 }
