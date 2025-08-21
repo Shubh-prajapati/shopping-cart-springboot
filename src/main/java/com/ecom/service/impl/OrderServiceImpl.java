@@ -79,5 +79,10 @@ private CartRepository cartRepository;
         return false;
     }
 
+    @Override
+    public List<ProductOrder> getAllOrder() {
+        return productOrderRepository.findAll();
+    }
+
 
 }
