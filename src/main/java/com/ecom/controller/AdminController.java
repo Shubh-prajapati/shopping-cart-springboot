@@ -4,6 +4,7 @@ import com.ecom.model.Product;
 import com.ecom.model.ProductOrder;
 import com.ecom.model.UserDtls;
 import com.ecom.services.*;
+import com.ecom.util.OrderStatus;
 import jakarta.servlet.http.HttpSession;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -244,6 +245,24 @@ import java.util.List;
         m.addAttribute("orders",allOrder);
         return "/admin/orders";
     }
+    @PostMapping("/update-order-status")
+    public String updateOrderStatus(@RequestParam Integer id, @RequestParam Integer st, HttpSession session) {
 
+        OrderStatus[] values = OrderStatus.values();
+        String status = null;
+
+        for (OrderStatus orderSt : values) {
+            if (orderSt.getId().equals(st)) {
+                status = orderSt.getName();
+            }
+        }
+        Boolean updateOrder = orderService.updateOrderStatus(id, status);
+        if (updateOrder) {
+            session.setAttribute("succMsg", "Status Updated");
+        } else {
+            session.setAttribute("errorMsg", "Status Not Updated");
+        }
+        return "redirect:/admin/orders";
+    }
 }
 
