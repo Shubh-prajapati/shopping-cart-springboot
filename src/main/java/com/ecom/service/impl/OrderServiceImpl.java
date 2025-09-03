@@ -6,6 +6,7 @@ import com.ecom.model.ProductOrder;
 import com.ecom.repository.CartRepository;
 import com.ecom.repository.ProductOrderRepository;
 import com.ecom.services.OrderService;
+import com.ecom.util.CommonUtil;
 import com.ecom.util.OrderStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,8 +25,11 @@ import java.util.UUID;
 
 @Autowired
 private CartRepository cartRepository;
+
+@Autowired
+private CommonUtil commonUtil;
     @Override
-    public void saveOrder(Integer userid, OrderRequest orderRequest) {
+    public void saveOrder(Integer userid, OrderRequest orderRequest) throws Exception {
 
         List<Cart> carts=cartRepository.findByUserId(userid);
 
@@ -55,7 +59,8 @@ private CartRepository cartRepository;
 
             order.setOrderAddress(address);
 
-            productOrderRepository.save(order);
+            ProductOrder saveOrder = productOrderRepository.save(order);
+            commonUtil.sendMailForProductOrder(order, "success");
         }
 
     }
@@ -68,15 +73,15 @@ private CartRepository cartRepository;
     }
 
     @Override
-    public Boolean updateOrderStatus(Integer id, String status) {
+    public ProductOrder updateOrderStatus(Integer id, String status) {
         Optional<ProductOrder> findById = productOrderRepository.findById(id);
         if(findById.isPresent()){
             ProductOrder productOrder = findById.get();
             productOrder.setStatus(status);
-             productOrderRepository.save(productOrder);
-                return true;
+            ProductOrder updateOrder = productOrderRepository.save(productOrder);
+            return updateOrder;
         }
-        return false;
+        return null;
     }
 
     @Override

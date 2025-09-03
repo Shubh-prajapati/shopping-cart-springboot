@@ -4,6 +4,7 @@ import com.ecom.model.Product;
 import com.ecom.model.ProductOrder;
 import com.ecom.model.UserDtls;
 import com.ecom.services.*;
+import com.ecom.util.CommonUtil;
 import com.ecom.util.OrderStatus;
 import jakarta.servlet.http.HttpSession;
 import lombok.SneakyThrows;
@@ -40,6 +41,9 @@ import java.util.List;
 
         @Autowired
         private OrderService orderService;
+
+        @Autowired
+         private CommonUtil commonUtils;
 
         @ModelAttribute
         public void getUserDetails(Principal p, Model m){
@@ -256,13 +260,28 @@ import java.util.List;
                 status = orderSt.getName();
             }
         }
-        Boolean updateOrder = orderService.updateOrderStatus(id, status);
-        if (updateOrder) {
+
+        // Update the order status first
+        ProductOrder updateOrder = orderService.updateOrderStatus(id, status);
+
+        // If order is updated successfully
+        if (!ObjectUtils.isEmpty(updateOrder)) {
             session.setAttribute("succMsg", "Status Updated");
+
+            // Try sending the email notification
+            try {
+                commonUtils.sendMailForProductOrder(updateOrder, status);
+            } catch (Exception e) {
+                // Log error for debugging but don't block the redirect
+                e.printStackTrace();
+                session.setAttribute("errorMsg", "Status updated but email not sent");
+            }
+
         } else {
             session.setAttribute("errorMsg", "Status Not Updated");
         }
+
         return "redirect:/admin/orders";
+        }
     }
-}
 
