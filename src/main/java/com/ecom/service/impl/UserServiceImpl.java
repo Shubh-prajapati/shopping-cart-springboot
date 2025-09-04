@@ -7,6 +7,8 @@ import com.ecom.util.AppConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -110,6 +112,24 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDtls updateUser(UserDtls user) {
         return userRepository.save(user);
+    }
+
+    @Override
+    public UserDtls updateUserProfile(UserDtls user) {
+
+
+        UserDtls dbUser = userRepository.findById(user.getId()).get();
+
+        if (!ObjectUtils.isEmpty(dbUser)){
+            dbUser.setName(user.getName());
+            dbUser.setMobileNumber(user.getMobileNumber());
+            dbUser.setAddress(user.getAddress());
+            dbUser.setCity(user.getCity());
+            dbUser.setState(user.getState());
+            dbUser.setPincode(user.getPincode());
+
+        }
+        return null;
     }
 
 
