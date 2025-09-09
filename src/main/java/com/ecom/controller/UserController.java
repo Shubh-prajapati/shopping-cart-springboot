@@ -8,6 +8,7 @@ import com.ecom.util.CommonUtil;
 import com.ecom.util.OrderStatus;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
@@ -41,6 +42,8 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     @ModelAttribute
     public void getUserDetails(Principal p, Model m) {
         if (p != null) {
@@ -166,6 +169,28 @@ public class UserController {
             session.setAttribute("errorMsg", "Profile Not Updated");
         }else {
             session.setAttribute("succMsg","Profile Updated");
+        }
+        return "redirect:/user/profile";
+    }
+
+
+    @PostMapping("/change-password")
+    public String changePassword(@RequestParam String  newPassword, String currentPassword,Principal p,HttpSession session){
+
+        UserDtls loggedInUserDetails = getLoggedInUserDetails(p);
+
+        boolean matches=passwordEncoder.matches(currentPassword,loggedInUserDetails.getPassword());
+        if(matches){
+                String encodePassword=passwordEncoder .encode(newPassword);
+                loggedInUserDetails.setPassword(encodePassword);
+                UserDtls updateUser=userService.updateUser(loggedInUserDetails);
+                if (ObjectUtils.isEmpty(updateUser)){
+                    session.setAttribute("error","password not updated !! Error in server");
+                }else {
+                    session.setAttribute("succMsg","Password Update sucessfully");
+                }
+        }else {
+            session.setAttribute("errorMsg","Current Password incorrect");
         }
         return "redirect:/user/profile";
     }
