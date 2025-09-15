@@ -89,5 +89,11 @@ private CommonUtil commonUtil;
         return productOrderRepository.findAll();
     }
 
+    @Override
+    public ProductOrder getOrderByOrderId(String orderId) {
+        return productOrderRepository.findByOrderId(orderId);
+
+    }
+
 
 }

@@ -227,6 +227,7 @@ import java.util.List;
 
             List<UserDtls> users=userService.getUsers("ROLE_USER");
             m.addAttribute("users",users);
+
         return "/admin/users";
     }
 
@@ -242,12 +243,13 @@ import java.util.List;
             return "redirect:/admin/users";
     }
 
-
     @GetMapping("/orders")
     public String getAllOrders(Model m){
-      List<ProductOrder>allOrder=orderService.getAllOrder();
+        List<ProductOrder>allOrder=orderService.getAllOrder();
         m.addAttribute("orders",allOrder);
+        m.addAttribute("srch", false);
         return "/admin/orders";
+
     }
     @PostMapping("/update-order-status")
     public String updateOrderStatus(@RequestParam Integer id, @RequestParam Integer st, HttpSession session) {
@@ -283,5 +285,26 @@ import java.util.List;
 
         return "redirect:/admin/orders";
         }
+    @GetMapping("/search-order")
+    public String searchProduct(@RequestParam String orderId, Model m, HttpSession session){
+            ProductOrder order=orderService.getOrderByOrderId(orderId.trim());
+            if(orderId!=null && orderId.length()>0) {
+
+                if (ObjectUtils.isEmpty(order)) {
+                    session.setAttribute("errorMsg", "Incorrect orderId");
+                    m.addAttribute("orderDtls", null);
+                } else {
+                    m.addAttribute("orderDtls", order);
+                }
+                m.addAttribute("srch", true);
+            }else {
+                List<ProductOrder>allOrder=orderService.getAllOrder();
+                m.addAttribute("orders",allOrder);
+                m.addAttribute("srch", false);
+            }
+        return "/admin/orders";
+
+
+    }
     }
 
