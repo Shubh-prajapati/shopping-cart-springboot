@@ -173,9 +173,17 @@ import java.util.List;
            }
              return "redirect:/admin/loadAddProduct";
            }
+
+
            @GetMapping("/products")
-           public String loadViewProduct(Model m){
-            m.addAttribute("products", productService.getAllProduct());
+           public String loadViewProduct(Model m, @RequestParam(defaultValue = "") String ch){
+               List<Product> products=null;
+            if (ch!=null && ch.length()>0){
+                products= productService.searchProduct(ch);
+            }else {
+               products= productService.getAllProduct();
+            }
+            m.addAttribute("products",products);
             return "admin/products";
 
            }
@@ -303,8 +311,8 @@ import java.util.List;
                 m.addAttribute("srch", false);
             }
         return "/admin/orders";
-
-
     }
+
+
     }
 
