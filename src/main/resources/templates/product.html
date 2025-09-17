@@ -33,7 +33,6 @@
                         th:href="@{'/products?category='+${c.name}}"
                         th:classappend="${paramValue == c.name} ? 'active' : '' "
                        class="list-group-item list-group-item-action">[[${c.name}]]</a>
-
                 </div>
                     </div>
                 </div>
@@ -45,7 +44,7 @@
                         <p class="fs-3 text-center">Products</p>
                         <div class="row">
 
-                            <th:block th:if="${products.size >0}">
+                            <th:block th:if="${productsSize >0}">
                             <div class="col-md-3" th:each="p:${products}">
                                 <div class="card ">
                                   <div class="card-body text-center">
@@ -65,18 +64,35 @@
                             </div>
                             </th:block>
 
-                            <th:block  th:unless="${products.size>0}">
+                            <th:block  th:unless="${productsSize >0}">
 
                                 <p class="fs-f4 text-center mt-4 text-danger">Product Not Available</p>
                             </th:block>
                         </div>
                     </div>
                 </div>
+
+<!--                Start Pagination-->
+                <div class="row">
+                    <div class="col-md-4">Total Product : [[${totalElements}]]</div>
+                    <div class="col-md-6"> <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            <li class="page-item"><a class="page-link" aria-label="Previous" href="#"> <span aria-hidden="true">&laquo;</span>
+                            </a></li>
+                            <li th:each="i:${#numbers.sequence(1, totalPages)}" class="page-item">
+                                <a class="page-link" th:href="@{'/products?pageSize=' + ${i-1} + '&pageSize=' + ${pageSize}}">[[${i}]]</a>
+                            </li>
+
+                            <li class="page-item"><a class="page-link" aria-label="Next" href="#"> <span aria-hidden="true">&raquo;</span>
+                            </a></li>
+                        </ul>
+                    </nav>
+                    </div>
+                </div>
+
             </div>
         </div>
-
     </div>
-
 </section>
 </body>
 </html>
