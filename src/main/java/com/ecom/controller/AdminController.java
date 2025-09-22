@@ -257,8 +257,8 @@ import java.util.List;
         m.addAttribute("orders",allOrder);
         m.addAttribute("srch", false);
         return "/admin/orders";
-
     }
+
     @PostMapping("/update-order-status")
     public String updateOrderStatus(@RequestParam Integer id, @RequestParam Integer st, HttpSession session) {
 
@@ -290,7 +290,6 @@ import java.util.List;
         } else {
             session.setAttribute("errorMsg", "Status Not Updated");
         }
-
         return "redirect:/admin/orders";
         }
     @GetMapping("/search-order")

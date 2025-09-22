@@ -1,6 +1,9 @@
 package com.ecom.services;
 
 import com.ecom.model.Category;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 
@@ -18,4 +21,6 @@ public interface CategoryService {
      public Category getCategoryById(int id);
 
      public List<Category> getAllActiveCategory();
+
+     public Page<Category> getAllCategoryPagination(Integer pageNo, Integer pageSize);
 }
