@@ -9,6 +9,9 @@ import com.ecom.services.OrderService;
 import com.ecom.util.CommonUtil;
 import com.ecom.util.OrderStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -90,10 +93,18 @@ private CommonUtil commonUtil;
     }
 
     @Override
+    public Page<ProductOrder> getAllOrdersPagination(Integer pageNo, Integer pageSize) {
+        Pageable pageable= PageRequest.of(pageNo,pageSize);
+        return productOrderRepository.findAll(pageable);
+    }
+
+
+    @Override
     public ProductOrder getOrderByOrderId(String orderId) {
         return productOrderRepository.findByOrderId(orderId);
 
     }
+
 
 
 }

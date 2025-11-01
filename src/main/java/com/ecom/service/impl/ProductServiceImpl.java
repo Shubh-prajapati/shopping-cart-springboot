@@ -11,7 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,6 +32,12 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> getAllProduct() {
         return productRepository.findAll();
+    }
+
+    @Override
+    public Page<Product> getAllProductPagination(Integer pageNo, Integer pageSize) {
+       Pageable pageable= PageRequest.of(pageNo, pageSize);
+        return productRepository.findAll(pageable);
     }
 
     @Override
@@ -113,6 +118,17 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findByTitleContainingIgnoreCaseOrCategoryContainingIgnoreCase(ch ,ch);
 
     }
+
+    @Override
+    public Page<Product> searchProductPagination(Integer pageNo, Integer pageSize, String ch) {
+
+       Pageable pageable= PageRequest.of(pageNo,pageSize);
+        return productRepository.findByTitleContainingIgnoreCaseOrCategoryContainingIgnoreCase(ch ,ch,pageable);
+
+
+    }
+
+
 
     @Override
     public Page<Product> getAllActiveProductPagination(Integer pageNo, Integer pageSize,String category) {
