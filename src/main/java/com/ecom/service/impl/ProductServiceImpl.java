@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,16 +37,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Page<Product> getAllProductPagination(Integer pageNo, Integer pageSize) {
-       Pageable pageable= PageRequest.of(pageNo, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
         return productRepository.findAll(pageable);
     }
 
     @Override
     public Boolean deleteProduct(Integer id) {
-
-        Product product=productRepository.findById(id).orElse(null);
-        if(!ObjectUtils.isEmpty(product))
-        {
+        Product product = productRepository.findById(id).orElse(null);
+        if (!ObjectUtils.isEmpty(product)) {
             productRepository.delete(product);
             return true;
         }
@@ -54,15 +53,17 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product getProductById(Integer id) {
-       Product  product =productRepository.findById(id).orElse(null);
-        return  productRepository.findById(id).orElse(null);
+        return productRepository.findById(id).orElse(null);
     }
 
-
     @Override
-    public Product updateProduct(Product product, MultipartFile image){
-        Product dbProduct=getProductById(product.getId());
-        String imageName =image.isEmpty() ? dbProduct.getImage() : image.getOriginalFilename();
+    public Product updateProduct(Product product, MultipartFile image) {
+        Product dbProduct = getProductById(product.getId());
+        if (dbProduct == null) {
+            return null;
+        }
+
+        String imageName = image.isEmpty() ? dbProduct.getImage() : image.getOriginalFilename();
 
         dbProduct.setTitle(product.getTitle());
         dbProduct.setDescription(product.getDescription());
@@ -73,76 +74,52 @@ public class ProductServiceImpl implements ProductService {
         dbProduct.setDiscount(product.getDiscount());
         dbProduct.setIsActive(product.getIsActive());
 
-        Double discount=product.getPrice()*(product.getDiscount()/100.0);
-        Double discountPrice=product.getPrice()-discount;
+        Double discount = product.getPrice() * (product.getDiscount() / 100.0);
+        Double discountPrice = product.getPrice() - discount;
         dbProduct.setDiscountPrice(discountPrice);
 
+        Product updatedProduct = productRepository.save(dbProduct);
 
-        Product updateProduct = productRepository.save(dbProduct);
-        if (!ObjectUtils.isEmpty(updateProduct))
-        {
-            if (!image.isEmpty()){
-                try {
-
-                    File saveFile = new ClassPathResource("static/img").getFile();
-                    Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "product_img" + File.separator
-                            + image.getOriginalFilename());
-                    Files.copy(image.getInputStream(),path, StandardCopyOption.REPLACE_EXISTING);
-                }catch(Exception e) {
-                    e.printStackTrace();
-
-                }
+        if (updatedProduct != null && !image.isEmpty()) {
+            try {
+                File saveFile = new ClassPathResource("static/img").getFile();
+                Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "product_img" + File.separator + image.getOriginalFilename());
+                Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            return  product;
         }
-        return null;
+
+        return updatedProduct;
     }
 
     @Override
     public List<Product> getAllActiveProducts(String category) {
-
-        List<Product> products=null;
-        if(ObjectUtils.isEmpty(category))
-        {
-            products =productRepository.findByIsActiveTrue();
-        }else{
-          products =productRepository.findByCategory(category);
+        if (ObjectUtils.isEmpty(category)) {
+            return productRepository.findByIsActiveTrue();
+        } else {
+            return productRepository.findByCategory(category);
         }
-
-        return products;
     }
 
     @Override
     public List<Product> searchProduct(String ch) {
-
-        return productRepository.findByTitleContainingIgnoreCaseOrCategoryContainingIgnoreCase(ch ,ch);
-
+        return productRepository.findByTitleContainingIgnoreCaseOrCategoryContainingIgnoreCase(ch, ch);
     }
 
     @Override
     public Page<Product> searchProductPagination(Integer pageNo, Integer pageSize, String ch) {
-
-       Pageable pageable= PageRequest.of(pageNo,pageSize);
-        return productRepository.findByTitleContainingIgnoreCaseOrCategoryContainingIgnoreCase(ch ,ch,pageable);
-
-
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        return productRepository.searchProducts(ch, pageable);
     }
-
-
 
     @Override
-    public Page<Product> getAllActiveProductPagination(Integer pageNo, Integer pageSize,String category) {
-        Pageable pageable=PageRequest.of(pageNo,pageSize);
-        Page<Product>pageProduct=null;
-
-        if(ObjectUtils.isEmpty(category))
-        {
-            pageProduct =productRepository.findByIsActiveTrue(pageable);
-        }else{
-            pageProduct =productRepository.findByCategory(pageable,category);
+    public Page<Product> getAllActiveProductPagination(Integer pageNo, Integer pageSize, String category) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        if (ObjectUtils.isEmpty(category)) {
+            return productRepository.findByIsActiveTrue(pageable);
+        } else {
+            return productRepository.findByCategory(pageable, category);
         }
-        return pageProduct;
     }
-
-
 }

@@ -19,4 +19,6 @@ public interface UserService {
             public UserDtls updateUser(UserDtls user);
             public UserDtls updateUserProfile(UserDtls user, MultipartFile file);
 
+    public UserDtls saveAdmin(UserDtls user);
+
 }
