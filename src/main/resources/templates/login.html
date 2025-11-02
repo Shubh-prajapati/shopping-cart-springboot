@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="base::Layout(~{::section})">
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base::Layout(~{::section})}">
 <head>
     <meta charset="UTF-8">
     <title>Login Page</title>
@@ -16,15 +16,24 @@
            <div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
                <div class="card-header">
                    <p class="fs-4 text-center">Login</p>
+
+                    <div th:if="${param.error}" class="alert alert-danger text-center">
+                        [[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]
+
+                    </div>
+                   <div th:if="${param.logout}" class="alert alert-success">
+                            Logout Successfully
+                        </div>
+
                </div>
                <div class="card-body">
-               <form>
+               <form action="/login" method="post">
                    <div class="mb-3">
                        <label class="form-label">Email</label> <input
-                           class="form-control" name="email" type="email">
+                           class="form-control" name="username" type="email">
                    </div>
 
-                   <div class="mb-3">
+                   <div class="mb-3" >
                        <label class="form-label">Password</label> <input
                            class="form-control" name="password" type="password">
                    </div>
@@ -32,7 +41,7 @@
                </form>
            </div>
            <div class="card-footer text-center">
-               <a href="#" class="text-decoration-none">Forgot Password</a><br>
+               <a href="/forgot-password" class="text-decoration-none">Forgot Password</a><br>
                Don't Have Account ?
                <a href="#" class="text-decoration-none">Create One</a>
            </div>

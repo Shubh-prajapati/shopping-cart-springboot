@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      th:replace="base::Layout(~{::section})">
+      th:replace="~{base::Layout(~{::section})}">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -35,7 +35,7 @@
                 </div>
 
                 <div class="col-md-4 mt-4">
-                    <a href="#" class="text-decoration-none">
+                    <a href="/admin/products" class="text-decoration-none">
                         <div class="card card-sh">
                             <div class="card-body text-center text-success">
                                 <i class="fa-solid fa-table-list fa-3x"></i>
@@ -47,7 +47,7 @@
                     </a>
                 </div>
                 <div class="col-md-4 mt-4">
-                    <a href="#" class="text-decoration-none">
+                    <a href="/admin/orders" class="text-decoration-none">
                         <div class="card card-sh">
                             <div class="card-body text-center text-danger">
                                 <i class="fa-solid fa-box-open fa-3x"></i>
@@ -59,30 +59,25 @@
                     </a>
                 </div>
                 <div class="col-md-4 mt-4">
-                    <a href="#" class="text-decoration-none">
+                    <a href="/admin/users" class="text-decoration-none">
                         <div class="card card-sh">
                             <div class="card-body text-center text-primary">
                                 <i class="fa-solid fa-circle-user fa-3x"></i>
                                 <h4 >Users</h4>
-
-
                             </div>
                         </div>
                     </a>
                 </div>
                 <div class="col-md-4 mt-4">
-                    <a href="#" class="text-decoration-none">
+                    <a href="/admin/add-admin" class="text-decoration-none">
                         <div class="card card-sh">
                             <div class="card-body text-center text-primary">
                                 <i class="fa-solid fa-user-plus fa-3x"></i>
                                 <h4 >Add Admin</h4>
-
-
                             </div>
                         </div>
                     </a>
                 </div>
-
             </div>
         </div>
     </section>
