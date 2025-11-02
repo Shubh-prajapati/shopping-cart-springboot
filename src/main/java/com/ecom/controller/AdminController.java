@@ -266,11 +266,16 @@ import java.util.List;
     }
 
     @GetMapping("/users")
-    public String getAllUser(Model m){
+    public String getAllUser(Model m,@RequestParam Integer type){
 
-            List<UserDtls> users=userService.getUsers("ROLE_USER");
+        List<UserDtls> users=null;
+            if(type==1){
+               users= userService.getUsers("ROLE_USER");
+            }else{
+                users= userService.getUsers("ROLE_ADMIN");
+            }
+            m.addAttribute("userType",type);
             m.addAttribute("users",users);
-
         return "/admin/users";
     }
 
