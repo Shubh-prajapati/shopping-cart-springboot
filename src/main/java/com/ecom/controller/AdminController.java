@@ -280,15 +280,15 @@ import java.util.List;
     }
 
     @GetMapping("/updateSts")
-    public String updateUserAccountStatus(@RequestParam Boolean status,@RequestParam Integer id,HttpSession session){
+    public String updateUserAccountStatus(@RequestParam Boolean status,@RequestParam Integer id,@RequestParam Integer type, HttpSession session){
            Boolean f= userService.updateAccountStatus(id,status);
            if(f){
-               session.setAttribute("succMsg", "Account Status Upadated");
+               session.setAttribute("succMsg", "Account Status Updated");
            }else {
                session.setAttribute("errorMsg","Something Wrong On Server");
            }
 
-            return "redirect:/admin/users";
+            return "redirect:/admin/users?type="+type;
     }
 
     @GetMapping("/orders")

@@ -41,6 +41,8 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findAll(pageable);
     }
 
+
+
     @Override
     public Boolean deleteProduct(Integer id) {
         Product product = productRepository.findById(id).orElse(null);
@@ -110,7 +112,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Page<Product> searchProductPagination(Integer pageNo, Integer pageSize, String ch) {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
-        return productRepository.searchProducts(ch, pageable);
+        return productRepository.findByTitleContainingIgnoreCaseOrCategoryContainingIgnoreCase(ch,ch,pageable);
     }
 
     @Override
@@ -122,4 +124,19 @@ public class ProductServiceImpl implements ProductService {
             return productRepository.findByCategory(pageable, category);
         }
     }
+    @Override
+    public Page<Product> searchActiveProductPagination(Integer pageNo, Integer pageSize, String category, String ch) {
+
+        Page<Product>pageProduct=null;
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+
+        pageProduct =productRepository.findByisActiveTrueAndTitleContainingIgnoreCaseOrCategoryContainingIgnoreCase(ch,ch,pageable);
+
+        return pageProduct;
+    }
+
+
+
+
+
 }
