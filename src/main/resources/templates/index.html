@@ -42,8 +42,8 @@
                                <img th:src="@{'/img/category_img/' + ${p.image}}"
                                     alt="[[${p.name}]]"
                                     width="65%"
-                                    height="140px">
-                               <p>[[${p.name}]]</p>
+                                    height="140px"><br>
+                               <a th:href="@{'/products?category='+${p.name}}" class="text-decoration-none">[[${p.name}]]</a>
                            </div>
                        </div>
                    </div>
@@ -118,7 +118,7 @@
                                     width="65%" height="140px">
 
 
-                               <p class="text-center mt-2 fw-semibold">[[${p.title}]]</p>
+                               <p class="text-center mt-2 fw-semibold"><a th:href="@{'/product/' + ${p.id}}" class="text-decoration-none">[[${p.title}]]</a></p>
                            </div>
                        </div>
                    </div>

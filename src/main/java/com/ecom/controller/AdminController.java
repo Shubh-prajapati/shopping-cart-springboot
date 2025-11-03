@@ -197,7 +197,7 @@ import java.util.List;
            @GetMapping("/products")
            public String loadViewProduct(Model m, @RequestParam(defaultValue = "") String ch,
                                          @RequestParam(name="pageNo",defaultValue = "0")Integer pageNo,
-                                         @RequestParam(name="pageSize",defaultValue = "2") Integer pageSize){
+                                         @RequestParam(name="pageSize",defaultValue = "10") Integer pageSize){
 //               List<Product> products=null;
 //            if (ch!=null && ch.length()>0){
 //                products= productService.searchProduct(ch);
