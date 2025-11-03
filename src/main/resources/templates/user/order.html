@@ -8,10 +8,9 @@
 <body>
 <section>
     <div class="container mt-5 p-5">
-        <form action="/user/save-order" method="post">
+        <form action="/user/save-order" method="post" id="orders">
         <div class="row">
-            <div class="col-md-6 ">
-
+            <div class="col-md-6">
                   <div class="mb-3 row">
                       <p class="text-center fs-4">Fill Address</p>
                       <hr>
@@ -106,8 +105,8 @@
 <!--                        <form action="/login" method="post">-->
                             <div class="mb-3">
                                 <label class="form-label">Select Payment Type</label>
-                                <select name="paymentType " class="form-control">
-                                    <option>--Select--</option>
+                                <select name="paymentType" class="form-control">
+                                <option>--Select--</option>
                                     <option value="COD">Cash On Delivery</option>
                                     <option value="ONLINE">Online Payment</option>
 
@@ -115,7 +114,8 @@
 
                             </div>
 
-                            <button  href="" class="btn bg-primary text-white col-md-12">Place Order</button>
+                            <button type="submit" class="btn bg-primary text-white col-md-12">Place Order</button>
+
                     </div>
 
                 </div>

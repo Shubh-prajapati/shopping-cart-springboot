@@ -109,7 +109,7 @@ public class UserController {
     }
 
     @PostMapping("/save-order")
-    private String orderOrder(@ModelAttribute OrderRequest request, Principal principal) throws Exception {
+    private String saveOrder(@ModelAttribute OrderRequest request, Principal principal) throws Exception {
         UserDtls user = getLoggedInUserDetails(principal);
         orderService.saveOrder(user.getId(), request);
         return "redirect:/user/success";

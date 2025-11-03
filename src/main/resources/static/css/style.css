@@ -1,26 +1,16 @@
 @charset "UTF-8";
-
-/* ✅ Card shadow style */
 .card-sh {
     box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.3);
 }
-
-/* ✅ Category box style */
 .cat-div {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
-
-/* ✅ Global container padding */
 .container {
     padding: 0px !important;
 }
-
-/* ✅ Prevent navbar overlap with content */
 body {
     padding-top: 80px !important;
 }
-
-/* ✅ Ensure dropdown shows above slider */
 .navbar {
     z-index: 2000 !important;
 }
@@ -29,8 +19,10 @@ body {
     z-index: 3000 !important;
 }
 
-/* ✅ Optional hover color */
 .dropdown-menu .dropdown-item:hover {
     background-color: #0d6efd;
     color: #fff;
+}
+.error{
+       color:red;
 }
