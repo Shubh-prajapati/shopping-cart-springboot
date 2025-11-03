@@ -18,7 +18,8 @@ public interface UserService {
             public UserDtls getUserByToken(String token );
             public UserDtls updateUser(UserDtls user);
             public UserDtls updateUserProfile(UserDtls user, MultipartFile file);
+            public UserDtls saveAdmin(UserDtls user);
 
-    public UserDtls saveAdmin(UserDtls user);
+            public Boolean existsEmail(String email);
 
 }
