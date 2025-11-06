@@ -3,34 +3,35 @@
       th:replace="~{base::Layout(~{::section})}">
 <head>
     <meta charset="UTF-8">
-    <title>product</title>
+    <title>Products</title>
 </head>
 <body>
 <section>
-    <div class="container-fluid bg-primary p-5 mt-5">
-        <div class="row">
-            <div class="col-md-8 offset-md-2">
-                <form action="/products" method="get">
-                    <div class="input-group">
-                        <input type="text" class="form-control" name="ch" placeholder="Search...">
-                        <button class="btn btn-light text-dark" type="submit">
-                            <i class="fa-solid fa-magnifying-glass"></i> Search
-                        </button>
-                    </div>
+
+    <!-- 🔵 Search Bar Section (blue header, no extra gap) -->
+    <div class="container-fluid bg-primary py-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <form action="/products" method="get" class="d-flex">
+                    <input type="text" class="form-control me-2" name="ch" placeholder="Search...">
+                    <button class="btn btn-light text-dark" type="submit">
+                        <i class="fa-solid fa-magnifying-glass"></i> Search
+                    </button>
                 </form>
             </div>
         </div>
     </div>
 
-    <div class="container-fluid mt-3">
-        <div class="row">
+    <!-- 🟢 Main Container (Category + Product Grid) -->
+    <div class="container-fluid py-4">
+        <div class="row g-3">
 
             <!-- Sidebar Category -->
-            <div class="col-md-2 p-0">
-                <div class="card shadow-sm p-0 mb-5 bg-body-tertiary rounded">
+            <div class="col-md-2">
+                <div class="card shadow-sm border-0">
                     <div class="card-body">
-                        <div class="list-group">
-                            <p class="fs-5">Category</p>
+                        <p class="fs-5 fw-bold mb-3">Category</p>
+                        <div class="list-group list-group-flush">
                             <a href="/products"
                                th:classappend="${paramValue==''}? 'active':'' "
                                class="list-group-item list-group-item-action" aria-current="true">
@@ -49,27 +50,30 @@
 
             <!-- Product Section -->
             <div class="col-md-10">
-                <div class="card shadow-sm p-3 mb-5 bg-body-tertiary rounded">
+                <div class="card shadow-sm border-0">
                     <div class="card-body">
-                        <p class="fs-3 text-center">Products</p>
-                        <div class="row">
+                        <p class="fs-3 fw-bold text-center mb-4">Products</p>
 
+                        <div class="row g-4">
                             <!-- When products are available -->
                             <th:block th:if="${productsSize > 0}">
-                                <div class="col-md-3 mb-4" th:each="p:${products}">
-                                    <div class="card h-100">
+                                <div class="col-md-3 col-sm-6" th:each="p:${products}">
+                                    <div class="card h-100 shadow-sm border-0">
                                         <div class="card-body text-center">
-                                            <img alt="" th:src="@{'/img/product_img/' + ${p.image}}" width="100%" height="150px">
-                                            <p class="fs-5 text-center mt-2">[[${p.title}]]</p>
-
-                                            <p class="fs-6 fw-bold">
-                                                <span>&#8377; [[${p.discountPrice}]]</span> <br>
-                                                <span class="text-decoration-line-through text-secondary">&#8377; [[${p.price}]]</span>
-                                                <span class="fs-6 text-success">[[${p.discount}]]% off</span>
+                                            <img alt="Product Image"
+                                                 th:src="@{'/img/product_img/' + ${p.image}}"
+                                                 class="img-fluid rounded"
+                                                 style="height: 150px; object-fit: cover;">
+                                            <p class="fs-5 mt-3 mb-2 text-dark fw-semibold">[[${p.title}]]</p>
+                                            <p class="mb-1">
+                                                <span class="fw-bold text-dark">&#8377; [[${p.discountPrice}]]</span>
                                             </p>
-
+                                            <p class="text-secondary mb-2">
+                                                <span class="text-decoration-line-through">&#8377; [[${p.price}]]</span>
+                                                <span class="text-success fw-semibold">[[${p.discount}]]% off</span>
+                                            </p>
                                             <a th:href="@{'/product/' + ${p.id}}"
-                                               class="btn btn-primary mt-2">View Details</a>
+                                               class="btn btn-outline-primary btn-sm">View Details</a>
                                         </div>
                                     </div>
                                 </div>
@@ -77,24 +81,24 @@
 
                             <!-- When no product available -->
                             <th:block th:unless="${productsSize > 0}">
-                                <p class="fs-4 text-center mt-4 text-danger">Product Not Available</p>
+                                <p class="fs-5 text-center text-danger mt-4">No products available.</p>
                             </th:block>
                         </div>
                     </div>
                 </div>
 
-                <!-- Pagination Section (only show if pagination data available) -->
-                <div th:if="${pageNo != null}">
-                    <div class="row mb-3">
-                        <div class="col-md-4">Total Products: [[${totalElements}]]</div>
-                        <div class="col-md-6">
-                            <nav aria-label="Page navigation example">
-                                <ul class="pagination">
+                <!-- Pagination Section -->
+                <div th:if="${pageNo != null}" class="mt-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-4 mb-2 mb-md-0">Total Products: [[${totalElements}]]</div>
+                        <div class="col-md-8 text-center">
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination justify-content-center mb-0">
                                     <li class="page-item" th:classappend="${isFirst} ? 'disabled' : ''">
                                         <a class="page-link"
                                            th:href="@{'/admin/products?pageNo=' + ${pageNo - 1}}"
                                            aria-label="Previous">
-                                            <span aria-hidden="true">&laquo;</span>
+                                            &laquo;
                                         </a>
                                     </li>
 
@@ -102,16 +106,14 @@
                                         class="page-item"
                                         th:classappend="${pageNo + 1 == i} ? 'active' : ''">
                                         <a class="page-link"
-                                           th:href="@{'/admin/products?pageNo=' + ${i - 1} + '&pageSize=' + ${pageSize}}">
-                                            [[${i}]]
-                                        </a>
+                                           th:href="@{'/admin/products?pageNo=' + ${i - 1} + '&pageSize=' + ${pageSize}}">[[${i}]]</a>
                                     </li>
 
                                     <li class="page-item" th:classappend="${isLast} ? 'disabled' : ''">
                                         <a class="page-link"
                                            th:href="@{'/admin/products?pageNo=' + ${pageNo + 1}}"
                                            aria-label="Next">
-                                            <span aria-hidden="true">&raquo;</span>
+                                            &raquo;
                                         </a>
                                     </li>
                                 </ul>
@@ -120,7 +122,6 @@
                     </div>
                 </div>
                 <!-- End Pagination -->
-
             </div>
         </div>
     </div>

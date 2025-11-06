@@ -109,11 +109,22 @@ public class UserController {
     }
 
     @PostMapping("/save-order")
-    private String saveOrder(@ModelAttribute OrderRequest request, Principal principal) throws Exception {
+    private String saveOrder(@ModelAttribute OrderRequest request, Principal principal, Model model) throws Exception {
+
+        // ✅ Validate before proceeding
+        if (request.getEmail() == null || request.getEmail().isBlank()
+                || request.getAddress() == null || request.getAddress().isBlank()
+                || request.getPincode() == null) {
+
+            model.addAttribute("errorMsg", "Please fill all required details before placing the order.");
+            return "user/order";  // stay on same page instead of crashing
+        }
+
         UserDtls user = getLoggedInUserDetails(principal);
         orderService.saveOrder(user.getId(), request);
         return "redirect:/user/success";
     }
+
 
 
     @GetMapping("/success")

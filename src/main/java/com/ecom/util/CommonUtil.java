@@ -23,88 +23,101 @@ public class CommonUtil {
 
     @Autowired
     private UserService userService;
-    public Boolean sendMail(String url, String reciepentEmail) throws MessagingException, UnsupportedEncodingException {
-       MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper=new MimeMessageHelper(message);
 
-        helper.setFrom("shubhpraj7028@gmail.com", "Shopping Cart");
-        helper.setTo(reciepentEmail);
+    /**
+     * Sends password reset email
+     */
+    public Boolean sendMail(String url, String recipientEmail)
+            throws MessagingException, UnsupportedEncodingException {
 
-
-        String content="<p>Hello, </p>"
-                +"<p>You Have requested to resent your password.</p>"
-                +"<p>Click link in below to Change your password</p>"
-                +"<p><a href=\""+ url+ "\">Change my password</a></p>";
-        helper.setSubject("Password reset");
-        helper.setText(content,true);
-
-        mailSender.send(message);
-        return true;
-    }
-
-    public static String generateUrl(HttpServletRequest request) {
-
-
-        String siteUrl = request.getRequestURL().toString();
-
-        return siteUrl.replace( request.getServletPath(),"");
-
-    }
-
-    String msg=null;
-
-    public Boolean sendMailForProductOrder(ProductOrder order, String status) throws Exception {
-
-        msg="<p>Hello [[name]]</p>"
-
-                +"<p>Thank Your Order <b>[[orderStatus]]</b>.</p>"
-                +"<p> <b>Product Details:</b> </p>"
-                +"<p> Name:[[productName]] </p>"
-                +"<p> Category:[[category]] </p>"
-                +"<p> Quantity:[[quantity]] </p>"
-                +"<p> Price:[[price]]</p>"
-                +"<p> Payment Type:[[paymentType]] </p>";
+        if (recipientEmail == null || recipientEmail.isBlank()) {
+            System.out.println("⚠️ Skipping password reset mail: recipient email empty");
+            return false;
+        }
 
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
 
         helper.setFrom("shubhpraj7028@gmail.com", "Shopping Cart");
-        helper.setTo(order.getOrderAddress().getEmail());
+        helper.setTo(recipientEmail);
 
-        // ✅ Define your email template here
-        String msg = """
-        <p>Hello [[name]],</p>
-        <p>Your order status has been updated.</p>
-        <p><strong>Product:</strong> [[productName]]</p>
-        <p><strong>Category:</strong> [[category]]</p>
-        <p><strong>Quantity:</strong> [[quantity]]</p>
-        <p><strong>Price:</strong> ₹[[price]]</p>
-        <p><strong>Payment Type:</strong> [[paymentType]]</p>
-        <p><strong>Status:</strong> [[orderStatus]]</p>
-        <p>Thank you for shopping with us!</p>
-    """;
+        String content = "<p>Hello,</p>"
+                + "<p>You have requested to reset your password.</p>"
+                + "<p>Click the link below to change your password:</p>"
+                + "<p><a href=\"" + url + "\">Change my password</a></p>";
 
-        // ✅ Safe replacements with default fallback (to prevent NullPointerException)
-        msg = msg.replace("[[name]]", Optional.ofNullable(order.getOrderAddress().getFirstName()).orElse("Customer"));
-        msg = msg.replace("[[orderStatus]]", Optional.ofNullable(status).orElse("Unknown"));
-        msg = msg.replace("[[productName]]", Optional.ofNullable(order.getProduct().getTitle()).orElse("N/A"));
-        msg = msg.replace("[[category]]", Optional.ofNullable(order.getProduct().getCategory()).orElse("N/A"));
-        msg = msg.replace("[[quantity]]", String.valueOf(order.getQuantity()));
-        msg = msg.replace("[[price]]", String.valueOf(order.getPrice()));
-        msg = msg.replace("[[paymentType]]", Optional.ofNullable(order.getPaymentType()).orElse("N/A"));
-
-
-        helper.setSubject("Your Order Status Update");
-        helper.setText(msg, true); // true = send as HTML
+        helper.setSubject("Password Reset");
+        helper.setText(content, true);
 
         mailSender.send(message);
         return true;
     }
 
-   public UserDtls getLoggedInUserDetails(Principal p) {
-        String email = p.getName();
-        UserDtls userDtls = userService.getUserByEmail(email);
-        return userDtls;
+    /**
+     * Generates absolute base URL from request
+     */
+    public static String generateUrl(HttpServletRequest request) {
+        String siteUrl = request.getRequestURL().toString();
+        return siteUrl.replace(request.getServletPath(), "");
     }
 
+    /**
+     * Sends confirmation / status update email for a product order
+     */
+    public Boolean sendMailForProductOrder(ProductOrder order, String status) throws Exception {
+
+        String email = Optional.ofNullable(order.getOrderAddress())
+                .map(addr -> addr.getEmail())
+                .orElse("");
+
+        // ✅ Prevent IllegalAddressException
+        if (email == null || email.isBlank()) {
+            System.out.println("⚠️ Skipping order mail: empty or invalid recipient email");
+            return false;
+        }
+
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+        helper.setFrom("shubhpraj7028@gmail.com", "Shopping Cart");
+        helper.setTo(email);
+
+        String msg = """
+            <p>Hello [[name]],</p>
+            <p>Your order status has been updated.</p>
+            <p><strong>Product:</strong> [[productName]]</p>
+            <p><strong>Category:</strong> [[category]]</p>
+            <p><strong>Quantity:</strong> [[quantity]]</p>
+            <p><strong>Price:</strong> ₹[[price]]</p>
+            <p><strong>Payment Type:</strong> [[paymentType]]</p>
+            <p><strong>Status:</strong> [[orderStatus]]</p>
+            <p>Thank you for shopping with us!</p>
+        """;
+
+        // ✅ Safe replacements with fallback defaults
+        msg = msg.replace("[[name]]",
+                Optional.ofNullable(order.getOrderAddress().getFirstName()).orElse("Customer"));
+        msg = msg.replace("[[orderStatus]]", Optional.ofNullable(status).orElse("Unknown"));
+        msg = msg.replace("[[productName]]",
+                Optional.ofNullable(order.getProduct()).map(p -> p.getTitle()).orElse("N/A"));
+        msg = msg.replace("[[category]]",
+                Optional.ofNullable(order.getProduct()).map(p -> p.getCategory()).orElse("N/A"));
+        msg = msg.replace("[[quantity]]", String.valueOf(order.getQuantity()));
+        msg = msg.replace("[[price]]", String.valueOf(order.getPrice()));
+        msg = msg.replace("[[paymentType]]", Optional.ofNullable(order.getPaymentType()).orElse("N/A"));
+
+        helper.setSubject("Your Order Status Update");
+        helper.setText(msg, true); // send as HTML
+
+        mailSender.send(message);
+        return true;
+    }
+
+    /**
+     * Get currently logged-in user details
+     */
+    public UserDtls getLoggedInUserDetails(Principal p) {
+        String email = p.getName();
+        return userService.getUserByEmail(email);
+    }
 }
