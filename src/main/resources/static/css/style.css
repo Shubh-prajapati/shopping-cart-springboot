@@ -15,7 +15,7 @@
 }
 
 body {
-    padding-top: 80px !important;
+    margin-top: 50px;
     background-color: #f8f9fa;
     font-family: "Poppins", sans-serif;
 }
@@ -88,3 +88,34 @@ footer {
         transform: translateY(0);
     }
 }
+
+/* Slim Search Input */
+.search-input {
+    height: 38px !important;
+    border-radius: 6px !important;
+    font-size: 14px !important;
+    padding-left: 12px !important;
+}
+
+/* Slim Search Button */
+.search-btn {
+    height: 38px !important;
+    padding: 0 18px !important;
+    border-radius: 6px !important;
+    font-size: 14px !important;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+
+.admin-title {
+    font-size: 32px;
+    font-weight: 700;
+    margin-top: 70px;   /* ⬅ Move title further down */
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+    color: #222;
+}
+
+

@@ -195,7 +195,7 @@ import java.util.List;
 
 
            @GetMapping("/products")
-           public String loadViewProduct(Model m, @RequestParam(defaultValue = "") String ch,
+           public String loadViewProduct(Model m, @RequestParam(name = "ch", defaultValue = "") String ch,
                                          @RequestParam(name="pageNo",defaultValue = "0")Integer pageNo,
                                          @RequestParam(name="pageSize",defaultValue = "10") Integer pageSize){
 //               List<Product> products=null;
