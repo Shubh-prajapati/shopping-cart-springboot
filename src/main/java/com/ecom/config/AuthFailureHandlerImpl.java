@@ -20,39 +20,39 @@ public class AuthFailureHandlerImpl extends SimpleUrlAuthenticationFailureHandle
 
     @Autowired
     private UserService userService;
+
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        String email=request.getParameter("username");
+        String email = request.getParameter("username");
         UserDtls userDtls = userRepository.findByEmail(email);
 
-        if (userDtls!=null){
+        if (userDtls != null) {
 
-        if( userDtls.getIsEnable()){
-            if (userDtls.getAccountNonLocked()){
-                if(userDtls.getFailedAttempt() < AppConstant.ATTEMPT_TIME)
-                {
-                    userService.increaseFailedAttempt(userDtls);
-                }else{
-                    userService.userAccountLock(userDtls);
-                    exception = new LockedException("Your Account is Locked !! failed attempt 3");
+            if (userDtls != null) {
+                if (userDtls.isEnable()) {
+                    if (userDtls.isAccountNonLocked()) {
+                        if (userDtls.getFailedAttempt() < AppConstant.ATTEMPT_TIME) {
+                            userService.increaseFailedAttempt(userDtls);
+                        } else {
+                            userService.userAccountLock(userDtls);
+                            exception = new LockedException("Your Account is Locked !! failed attempt 3");
+                        }
+                    } else {
+                        if (userService.unlockAccountTimeExpired(userDtls)) {
+                            exception = new LockedException("Your Account is Unlocked !! Please try to Login");
+                        } else {
+                            exception = new LockedException("Your Account is Locked !! Please try after sometimes");
+                        }
+                    }
+                } else {
+                    exception = new LockedException("Your account is Inactive");
                 }
-
-            }else {
-                if(userService.unlockAccountTimeExpired(userDtls)){
-                    exception = new LockedException("Your Account  is Unlocked !! Please try to Login");
-                }
-                else {
-                    exception = new LockedException("Your Account is Locked  !! Please try after sometimes");
-                }
+            } else {
+                exception = new LockedException("Email And Password is Incorrect");
             }
-        }else {
-                exception=new LockedException("your account is Inactive");
-        }
-        }else {
-            exception=new LockedException("Email And Password is Inactive");
-        }
 
-        super.setDefaultFailureUrl("/signin?error");
-        super.onAuthenticationFailure(request, response, exception);
+            super.setDefaultFailureUrl("/signin?error");
+            super.onAuthenticationFailure(request, response, exception);
+        }
     }
 }
