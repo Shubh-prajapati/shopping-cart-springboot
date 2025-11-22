@@ -33,19 +33,25 @@
                     <div class="card-body">
                         <p class="fs-5 fw-bold mb-3">Category</p>
                         <div class="list-group list-group-flush">
+
+                            <!-- ALL Category -->
                             <a href="/products"
-                               th:classappend="${paramValue==''}? 'active':'' "
-                               class="list-group-item list-group-item-action" aria-current="true">
+                               class="list-group-item list-group-item-action"
+                               th:classappend="${param.category == null} ? 'active' : ''">
                                 All
                             </a>
+
+                            <!-- Dynamic Categories -->
                             <a th:each="c : ${categories}"
                                th:href="@{'/products?category=' + ${c.name}}"
                                class="list-group-item list-group-item-action"
-                               th:classappend="${param.category != null and param.category[0] == c.name} ? 'active' : ''">
+                               th:classappend="${param.category != null and param.category[0].trim() == c.name} ? 'active' : ''">
                                 [[${c.name}]]
                             </a>
 
                         </div>
+
+
                     </div>
                 </div>
             </div>

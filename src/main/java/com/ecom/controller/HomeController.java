@@ -67,14 +67,18 @@ public class HomeController {
     }
     @GetMapping("/")
     public String index(Model m) {
-       List<Category> allActiveCategory= categoryService.getAllActiveCategory().stream().sorted((c1,c2)->c1.getId().compareTo(c2.getId()))
-               .limit(6).toList();
-       List<Product> allActiveProducts= productService.getAllActiveProducts("")
-               .stream().sorted((p1,p2)-> p1.getId()).limit(8).toList();
+        List<Category> allActiveCategory = categoryService.getAllActiveCategory()
+                .stream().sorted((c1, c2) -> c1.getId().compareTo(c2.getId()))
+                .limit(6).toList();
 
-       m.addAttribute("products",allActiveProducts);
-       m.addAttribute("category",allActiveCategory);
-       return "index";
+        List<Product> allActiveProducts = productService.getAllActiveProducts("")
+                .stream().sorted((p1, p2) -> p1.getId()).limit(8).toList();
+
+        m.addAttribute("products", allActiveProducts);
+        m.addAttribute("categories", allActiveCategory);
+
+        return "index";
+
     }
     @GetMapping("/signin")
     public String login() {

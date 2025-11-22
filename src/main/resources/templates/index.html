@@ -40,7 +40,7 @@
 
                    <!-- Dynamic Category Loop -->
                    <div class="col-md-2 mb-4" th:each="p : ${categories}">
-                       <div class="card shadow-sm p-3 rounded-circle">
+                   <div class="card shadow-sm p-3 rounded-circle">
                            <div class="card-body text-center">
                                <img th:src="@{'/img/category_img/' + ${p.image}}"
                                     alt="[[${p.name}]]"
