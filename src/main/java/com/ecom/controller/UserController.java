@@ -111,7 +111,7 @@ public class UserController {
     @PostMapping("/save-order")
     private String saveOrder(@ModelAttribute OrderRequest request, Principal principal, Model model) throws Exception {
 
-        // ✅ Validate before proceeding
+
         if (request.getEmail() == null || request.getEmail().isBlank()
                 || request.getAddress() == null || request.getAddress().isBlank()
                 || request.getPincode() == null) {

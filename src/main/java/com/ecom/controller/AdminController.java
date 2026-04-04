@@ -316,29 +316,27 @@ import java.util.List;
     }
 
     @PostMapping("/update-order-status")
-    public String updateOrderStatus(@RequestParam Integer id, @RequestParam Integer st, HttpSession session) {
+    public String updateOrderStatus(@RequestParam Integer id,
+                                    @RequestParam Integer st,
+                                    HttpSession session) {
 
         OrderStatus[] values = OrderStatus.values();
         String status = null;
 
         for (OrderStatus orderSt : values) {
             if (orderSt.getId().equals(st)) {
-                status = orderSt.getName();
+                status = orderSt.name();   // IMPORTANT CHANGE
             }
         }
 
-        // Update the order status first
         ProductOrder updateOrder = orderService.updateOrderStatus(id, status);
 
-        // If order is updated successfully
         if (!ObjectUtils.isEmpty(updateOrder)) {
             session.setAttribute("succMsg", "Status Updated");
 
-            // Try sending the email notification
             try {
                 commonUtils.sendMailForProductOrder(updateOrder, status);
             } catch (Exception e) {
-                // Log error for debugging but don't block the redirect
                 e.printStackTrace();
                 session.setAttribute("errorMsg", "Status updated but email not sent");
             }
@@ -346,8 +344,9 @@ import java.util.List;
         } else {
             session.setAttribute("errorMsg", "Status Not Updated");
         }
+
         return "redirect:/admin/orders";
-        }
+    }
     @GetMapping("/search-order")
     public String searchProduct(@RequestParam String orderId, Model m, HttpSession session,@RequestParam(name="pageNo",defaultValue = "0")Integer pageNo,
                                 @RequestParam(name="pageSize",defaultValue = "2") Integer pageSize){
