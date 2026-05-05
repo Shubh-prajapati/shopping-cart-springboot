@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  mysql-db:
+    image: mysql:8
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: shubh@3098
+      MYSQL_DATABASE: ecom_db
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - ecom-net
+
+  ecom-app:
+    image: shubh7707/ecommerce-app:v1
+    container_name: ecom-app
+    restart: always
+    depends_on:
+      - mysql-db
+    ports:
+      - "8081:8081"
+    networks:
+      - ecom-net
+
+volumes:
+  mysql_data:
+
+networks:
+  ecom-net:
