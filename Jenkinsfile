@@ -4,15 +4,13 @@ pipeline {
         label 'Windows-Agent'
     }
 
-    tools {
-        maven 'Maven'
-    }
-
     stages {
 
-        stage('Workspace Cleanup') {
+        stage('Verify Tools') {
             steps {
-                cleanWs()
+                bat 'git --version'
+                bat 'java -version'
+                bat 'mvn -version'
             }
         }
 
@@ -20,13 +18,6 @@ pipeline {
             steps {
                 git branch: 'release/develop_release',
                 url: 'https://github.com/Shubh-prajapati/shopping-cart-springboot.git'
-            }
-        }
-
-        stage('Verify Java & Maven') {
-            steps {
-                bat 'java -version'
-                bat 'mvn -version'
             }
         }
 
@@ -40,17 +31,6 @@ pipeline {
             steps {
                 bat 'dir target'
             }
-        }
-    }
-
-    post {
-
-        success {
-            echo 'Build Successful'
-        }
-
-        failure {
-            echo 'Build Failed'
         }
     }
 }
