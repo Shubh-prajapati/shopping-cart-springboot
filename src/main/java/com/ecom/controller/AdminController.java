@@ -110,13 +110,18 @@ import java.util.List;
                 Category saveCategory = categoryService.saveCategory(category);
                 if(ObjectUtils.isEmpty(saveCategory)){
                     session.setAttribute("errorMsg","Not saved ! internal server error");
-                }else{
+                }else {
+                    String uploadDir = "/app/uploads/category_img";
+                    Path uploadPath = Paths.get(uploadDir);
 
-                    File saveFile=new ClassPathResource("static/img").getFile();
-                    Path path= Paths.get(saveFile.getAbsolutePath()+ File.separator +"category_img"+ File.separator+ file.getOriginalFilename());
-                    //System.out.println(path);
-                    Files.copy(file.getInputStream(),path, StandardCopyOption.REPLACE_EXISTING);
-                    session.setAttribute("succMsg","Saved successfully");
+                    if (!Files.exists(uploadPath)) {
+                        Files.createDirectories(uploadPath);
+                    }
+
+                    Path path = uploadPath.resolve(file.getOriginalFilename());
+                    Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+
+                    session.setAttribute("succMsg", "Saved successfully");
                 }
             }
                 categoryService.saveCategory(category);
@@ -169,29 +174,37 @@ import java.util.List;
             return "redirect:/admin/loadEditCategory/" +category.getId();
         }
 
-        @PostMapping("/saveProduct")
-           public String saveProduct(@ModelAttribute Product product, @RequestParam("file") MultipartFile image, HttpSession session) throws IOException {
+    @PostMapping("/saveProduct")
+    public String saveProduct(@ModelAttribute Product product,
+                              @RequestParam("file") MultipartFile image,
+                              HttpSession session) throws IOException {
 
-            String imageName=image.isEmpty() ? "default.jpg": image.getOriginalFilename();
-            product.setImage(imageName);
-            product.setDiscount(0);
-            product.setDiscountPrice(product.getPrice());
-            Product saveProduct = productService.saveproduct(product);
+        String imageName = image.isEmpty() ? "default.jpg" : image.getOriginalFilename();
+        product.setImage(imageName);
+        product.setDiscount(0);
+        product.setDiscountPrice(product.getPrice());
 
+        Product saveProduct = productService.saveproduct(product);
 
-           if(!ObjectUtils.isEmpty(saveProduct)){
+        if (!ObjectUtils.isEmpty(saveProduct)) {
 
-               File saveFile=new ClassPathResource("static/img").getFile();
-               Path path= Paths.get(saveFile.getAbsolutePath()+ File.separator +"product_img"+ File.separator+ image.getOriginalFilename());
+            String uploadDir = "/app/uploads/product_img";
+            Path uploadPath = Paths.get(uploadDir);
 
-//               System.out.println(path);
-               Files.copy(image.getInputStream(),path, StandardCopyOption.REPLACE_EXISTING);
-               session.setAttribute("succMsg","Product Saved Success");
-           }else{
-               session.setAttribute("errorMsg","something wrong on server");
-           }
-             return "redirect:/admin/loadAddProduct";
-           }
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            Path path = uploadPath.resolve(image.getOriginalFilename());
+            Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+
+            session.setAttribute("succMsg", "Product Saved Success");
+        } else {
+            session.setAttribute("errorMsg", "something wrong on server");
+        }
+
+        return "redirect:/admin/loadAddProduct";
+    }
 
 
            @GetMapping("/products")
