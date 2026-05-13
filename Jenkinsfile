@@ -1,6 +1,8 @@
 pipeline {
 
-    agent any
+    agent {
+        label 'Windows-Agent'
+    }
 
     tools {
         maven 'Maven'
@@ -8,16 +10,47 @@ pipeline {
 
     stages {
 
-        stage('Build') {
+        stage('Workspace Cleanup') {
             steps {
-                sh 'mvn clean package -DskipTests'
+                cleanWs()
             }
         }
 
-        stage('Verify') {
+        stage('Checkout Code') {
             steps {
-                sh 'ls -ltr target/'
+                git branch: 'release/develop_release',
+                url: 'https://github.com/Shubh-prajapati/shopping-cart-springboot.git'
             }
+        }
+
+        stage('Verify Java & Maven') {
+            steps {
+                bat 'java -version'
+                bat 'mvn -version'
+            }
+        }
+
+        stage('Build Application') {
+            steps {
+                bat 'mvn clean package -DskipTests'
+            }
+        }
+
+        stage('Verify Artifact') {
+            steps {
+                bat 'dir target'
+            }
+        }
+    }
+
+    post {
+
+        success {
+            echo 'Build Successful'
+        }
+
+        failure {
+            echo 'Build Failed'
         }
     }
 }
