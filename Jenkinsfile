@@ -8,6 +8,10 @@ pipeline {
         maven 'Maven'
     }
 
+    environment {
+        IMAGE_NAME = "shubh7707/shopping-cart-app:v1"
+    }
+
     stages {
 
         stage('Checkout') {
@@ -25,20 +29,26 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                bat 'docker build -t shopping-cart-app .'
+                bat 'docker build -t %IMAGE_NAME% .'
             }
         }
 
-        stage('Run Docker Container') {
+        stage('DockerHub Login') {
             steps {
-                bat 'docker rm -f shopping-cart-container || exit 0'
-                bat 'docker run -d -p 8085:8080 --name shopping-cart-container shopping-cart-app'
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-login',
+                    usernameVariable: 'DOCKER_USER',
+                     passwordVariable: 'DOCKER_PASS'
+                )]) {
+
+                    bat 'echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin'
+                }
             }
         }
 
-        stage('Verify Container') {
+        stage('Push Docker Image') {
             steps {
-                bat 'docker ps'
+                bat 'docker push %IMAGE_NAME%'
             }
         }
     }
