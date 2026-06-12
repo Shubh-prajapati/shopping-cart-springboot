@@ -7,7 +7,7 @@ pipeline {
     }
 
     environment {
-        IMAGE_NAME = "shubh7707/shopping-cart-app:v3"
+        IMAGE_NAME = "shubh7707/shopping-cart-app:v1"
     }
 
     stages {
@@ -22,6 +22,18 @@ pipeline {
         stage('Build and Test') {
             steps {
                 sh 'mvn clean package'
+            }
+        }
+
+        stage('SonarQube Scan') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    sh '''
+                    mvn sonar:sonar \
+                    -Dsonar.projectKey=shopping-cart-app \
+                    -Dsonar.projectName=shopping-cart-app
+                    '''
+                }
             }
         }
 
