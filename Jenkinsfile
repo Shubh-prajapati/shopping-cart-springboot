@@ -1,15 +1,13 @@
 pipeline {
 
-    agent {
-        label 'Windows-Agent'
-    }
+    agent any
 
     tools {
         maven 'Maven'
     }
 
     environment {
-        IMAGE_NAME = "shubh7707/shopping-cart-app:v1"
+        IMAGE_NAME = "shubh7707/shopping-cart-app:v3"
     }
 
     stages {
@@ -21,15 +19,15 @@ pipeline {
             }
         }
 
-        stage('Build Application') {
+        stage('Build and Test') {
             steps {
-                bat 'mvn clean package -DskipTests'
+                sh 'mvn clean package'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                bat 'docker build -t %IMAGE_NAME% .'
+                sh 'docker build -t $IMAGE_NAME .'
             }
         }
 
@@ -41,15 +39,27 @@ pipeline {
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
 
-                    bat 'echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin'
+                    sh '''
+                    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                    '''
                 }
             }
         }
 
         stage('Push Docker Image') {
             steps {
-                bat 'docker push %IMAGE_NAME%'
+                sh 'docker push $IMAGE_NAME'
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline executed successfully'
+        }
+
+        failure {
+            echo 'Pipeline execution failed'
         }
     }
 }
