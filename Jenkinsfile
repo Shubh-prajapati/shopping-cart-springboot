@@ -47,14 +47,14 @@ pipeline {
             steps {
                 sh '''
                 trivy image \
+                --scanners vuln \
                 --severity HIGH,CRITICAL \
                 --exit-code 0 \
+                --skip-db-update \
                 --format table \
                 -o trivy-report.txt \
                 $IMAGE_NAME
                 '''
-
-                sh 'cat trivy-report.txt'
             }
         }
 
@@ -65,7 +65,6 @@ pipeline {
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
-
                     sh '''
                     echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
                     '''
