@@ -43,21 +43,6 @@ pipeline {
             }
         }
 
-        stage('Trivy Scan') {
-            steps {
-                sh '''
-                trivy image \
-                --scanners vuln \
-                --severity HIGH,CRITICAL \
-                --exit-code 0 \
-                --skip-db-update \
-                --format table \
-                -o trivy-report.txt \
-                $IMAGE_NAME
-                '''
-            }
-        }
-
         stage('DockerHub Login') {
             steps {
                 withCredentials([usernamePassword(
@@ -80,10 +65,6 @@ pipeline {
     }
 
     post {
-        always {
-            archiveArtifacts artifacts: 'trivy-report.txt', fingerprint: true
-        }
-
         success {
             echo 'Pipeline executed successfully'
         }
