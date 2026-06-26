@@ -7,7 +7,9 @@ pipeline {
     }
 
     environment {
-        IMAGE_NAME = "shubh7707/shopping-cart-app:v1"
+        AWS_REGION = "ap-south-1"
+        AWS_ACCOUNT_ID = "679846927479"
+        IMAGE_NAME = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/shopping-cart-app:v1"
     }
 
     stages {
@@ -15,6 +17,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'release/develop_release',
+                credentialsId: 'git-key',
                 url: 'https://github.com/Shubh-prajapati/shopping-cart-springboot.git'
             }
         }
@@ -31,21 +34,22 @@ pipeline {
             }
         }
 
-        stage('DockerHub Login') {
+        stage('Login to AWS ECR') {
             steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub-login',
-                    usernameVariable: 'DOCKER_USER',
-                    passwordVariable: 'DOCKER_PASS'
-                )]) {
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: 'aws-creds'
+                ]]) {
                     sh '''
-                    echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                    aws ecr get-login-password --region $AWS_REGION | \
+                    docker login --username AWS --password-stdin \
+                    $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
                     '''
                 }
             }
         }
 
-        stage('Push Docker Image') {
+        stage('Push Docker Image to ECR') {
             steps {
                 sh 'docker push $IMAGE_NAME'
             }
