@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shopping-cart-config
+  namespace: dev
+
+data:
+  APP_NAME: "Shopping Cart Application"
+  ENV: "Development"
+  DB_HOST: "mysql-service"
+  DB_PORT: "3306"
+  LOG_LEVEL: "INFO"

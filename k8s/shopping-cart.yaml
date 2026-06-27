@@ -1,0 +1,112 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shopping-cart
+  namespace: dev
+  labels:
+    app: shopping-cart
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: shopping-cart
+
+  template:
+    metadata:
+      labels:
+        app: shopping-cart
+
+    spec:
+      containers:
+        - name: shopping-cart
+          image: 679846927479.dkr.ecr.ap-south-1.amazonaws.com/shopping-cart-app:v1
+          imagePullPolicy: Always
+
+          ports:
+            - containerPort: 8080
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
+
+          env:
+            # ConfigMap Variables
+            - name: APP_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: shopping-cart-config
+                  key: APP_NAME
+
+            - name: ENV
+              valueFrom:
+                configMapKeyRef:
+                  name: shopping-cart-config
+                  key: ENV
+
+            - name: DB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: shopping-cart-config
+                  key: DB_HOST
+
+            - name: DB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: shopping-cart-config
+                  key: DB_PORT
+
+            - name: LOG_LEVEL
+              valueFrom:
+                configMapKeyRef:
+                  name: shopping-cart-config
+                  key: LOG_LEVEL
+
+            # Secret Variables
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_USER
+
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_PASSWORD
+
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_ROOT_PASSWORD
+
+            - name: MYSQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_DATABASE
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shopping-cart-service
+  namespace: dev
+
+spec:
+  type: LoadBalancer
+
+  selector:
+    app: shopping-cart
+
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
