@@ -29,22 +29,45 @@ spec:
 
           resources:
             requests:
-              cpu: "100m"
-              memory: "128Mi"
+              cpu: "250m"
+              memory: "512Mi"
 
             limits:
-              cpu: "300m"
-              memory: "256Mi"
+              cpu: "500m"
+              memory: "1024Mi"
+
+          # ==========================
+          # Startup Probe
+          # ==========================
+          startupProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            periodSeconds: 10
+            timeoutSeconds: 10
+            failureThreshold: 30
+
+          # ==========================
+          # Readiness Probe
+          # ==========================
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 70
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
 
           # ==========================
           # Liveness Probe
           # ==========================
           livenessProbe:
             httpGet:
-              path: /actuator/health
+              path: /actuator/health/liveness
               port: 8080
-            initialDelaySeconds: 30
-            periodSeconds: 10
+            initialDelaySeconds: 120
+            periodSeconds: 15
             timeoutSeconds: 5
             failureThreshold: 3
 
