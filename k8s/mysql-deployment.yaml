@@ -2,37 +2,89 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql
+  namespace: dev
+  labels:
+    app: mysql
+
 spec:
   replicas: 1
+
   selector:
     matchLabels:
       app: mysql
+
   template:
     metadata:
       labels:
         app: mysql
+
     spec:
       containers:
         - name: mysql
           image: mysql:8
-          env:
-            - name: MYSQL_ROOT_PASSWORD
-              value: "shubh@3098"
-            - name: MYSQL_DATABASE
-              value: "ecom_db"
+          imagePullPolicy: IfNotPresent
+
           ports:
             - containerPort: 3306
 
----
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_ROOT_PASSWORD
 
+            - name: MYSQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: shopping-cart-config
+                  key: MYSQL_DATABASE
+
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_USER
+
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_PASSWORD
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+
+          volumeMounts:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
+
+      volumes:
+        - name: mysql-storage
+          persistentVolumeClaim:
+            claimName: mysql-pvc
+
+---
 apiVersion: v1
 kind: Service
 metadata:
   name: mysql-db
+  namespace: dev
+
 spec:
+  type: ClusterIP
+
   selector:
     app: mysql
+
   ports:
-    - port: 3306
+    - name: mysql
+      port: 3306
       targetPort: 3306
-  type: ClusterIP
+      protocol: TCP

@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: shopping-cart
-          image: 679846927479.dkr.ecr.ap-south-1.amazonaws.com/shopping-cart-app:v1
+          image: 679846927479.dkr.ecr.ap-south-1.amazonaws.com/shopping-cart-app:v2
           imagePullPolicy: Always
 
           ports:
@@ -33,11 +33,25 @@ spec:
               memory: "128Mi"
 
             limits:
-              cpu: "250m"
+              cpu: "300m"
               memory: "256Mi"
 
+          # ==========================
+          # Liveness Probe
+          # ==========================
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+
           env:
+            # ==========================
             # ConfigMap Variables
+            # ==========================
             - name: APP_NAME
               valueFrom:
                 configMapKeyRef:
@@ -68,7 +82,9 @@ spec:
                   name: shopping-cart-config
                   key: LOG_LEVEL
 
+            # ==========================
             # Secret Variables
+            # ==========================
             - name: MYSQL_USER
               valueFrom:
                 secretKeyRef:
